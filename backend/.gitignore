@@ -1,0 +1,33 @@
+# Virtual environment
+./venv/
+/venv/
+/env/
+/myenv/
+
+.env/
+
+# Python files
+*.pyc
+__pycache__/
+
+# Django specific
+db.sqlite3
+/env
+/.env
+../env
+/staticfiles/
+/media/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+
+# ignore .env file containing credentials, API keys, tokens, passwords, etc.
+.env
+
+# Node.js
+/node_modules/
