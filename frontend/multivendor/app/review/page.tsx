@@ -43,7 +43,7 @@ const ReviewOrder = () => {
             try {
                 setIsLoading(true);
                 const cartResponse = await apiService.get('/api/cart/cart/');
-                const addressResponse = await apiService.get('/api/delivery-address/');
+                const addressResponse = await apiService.get('/api/deliveryaddress/');
                 console.log('Cart Response:', cartResponse.data);
             console.log('Address Response:', addressResponse.data);
 

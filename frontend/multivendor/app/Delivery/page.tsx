@@ -29,7 +29,7 @@ const DeliveryAddressForm = () => {
         e.preventDefault();
 
         try {
-            const response = await apiService.post('/api/delivery-address/', formData);
+            const response = await apiService.post('/api/deliveryaddress/', formData);
             setSuccess("Delivery address saved successfully!");
             setError(null);
             router.push("/review");

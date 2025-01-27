@@ -6,12 +6,11 @@ export async function handleRefresh() {
     console.log('handleRefresh');
 
     const refreshToken = await getRefreshToken();
+    if (!refreshToken) return null;
 
     const token = await fetch('http://localhost:8000/api/auth/token/refresh/', {
         method: 'POST',
-        body: JSON.stringify({
-            refresh: refreshToken
-        }),
+        body: JSON.stringify({ refresh: refreshToken }),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -22,9 +21,10 @@ export async function handleRefresh() {
             console.log('Response - Refresh:', json);
 
             if (json.access) {
+                // Set new access token
                 (await cookies()).set('session_access_token', json.access, {
                     httpOnly: true,
-                    secure: false,
+                    secure: false,  // Change to true in production
                     maxAge: 60 * 60, // 60 minutes
                     path: '/'
                 });
@@ -32,13 +32,14 @@ export async function handleRefresh() {
                 return json.access;
             } else {
                 resetAuthCookies();
+                return null;  // Refresh failed, reset cookies
             }
         })
         .catch((error) => {
-            console.log('error', error);
-
+            console.error('Error during token refresh:', error);
             resetAuthCookies();
-        })
+            return null;
+        });
 
     return token;
 }
@@ -84,6 +85,7 @@ export async function getAccessToken() {
     let accessToken = (await cookies()).get('session_access_token')?.value;
 
     if (!accessToken) {
+        // If no access token, attempt to refresh it
         accessToken = await handleRefresh();
     }
 
@@ -95,3 +97,4 @@ export async function getRefreshToken() {
 
     return refreshToken;
 }
+

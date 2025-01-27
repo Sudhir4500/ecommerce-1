@@ -5,9 +5,8 @@ import Navbar from "./components/Navbar/Navbar";
 import LoginModal from "./components/modals/LoginModal";
 import SignupModal from "./components/modals/Signupmodal";
 import Vendormodal from "./components/modals/Vendormodal";
-import LogoutButton from "./components/Logoutbutton";
 import CategoriesList from "./components/category/CategoriesList";
-import Addproducts from "./components/modals/Addproducts";
+import AuthInitializer from "./components/AuthInitializer";
 
 
 
@@ -40,6 +39,8 @@ export default function RootLayout({
         <Navbar />
         <div className=" pt-24">
           <CategoriesList />
+         
+          <AuthInitializer />
         {children}
       <LoginModal />
       <SignupModal />

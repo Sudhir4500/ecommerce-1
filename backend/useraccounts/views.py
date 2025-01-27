@@ -37,7 +37,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class myTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-    
+# Register a new user   
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
@@ -61,7 +61,7 @@ def create(self, request, *args, **kwargs):
     }, status=status.HTTP_201_CREATED)
 
 
-
+# check if the user is authenticated to get the profile
 @api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
 def profileView(request):
@@ -75,4 +75,16 @@ def profileView(request):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
+    
+
+
+# # Check if the user is authenticated
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def check_auth(request):
+#     # Check if the user is authenticated
+#     if request.user.is_authenticated:
+#         return Response({"isLoggedIn": True, "userId": request.user.id}, status=status.HTTP_200_OK)
+#     else:
+#         return Response({"isLoggedIn": False}, status=status.HTTP_200_OK)
 

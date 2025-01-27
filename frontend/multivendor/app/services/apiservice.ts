@@ -109,7 +109,7 @@ const apiService = {
         delete: async function (url: string): Promise<any> {
             const token = await getAccessToken();
         
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
                 fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
                     method: 'DELETE',
                     headers: {
@@ -119,20 +119,42 @@ const apiService = {
                     }
                 })
                     .then(response => {
+                        if (!response) {
+                            throw new Error('No response received from the server');
+                        }
+                        
                         if (!response.ok) {
                             throw new Error('Failed to delete item');
                         }
-                        return response.json();
+        
+                        // If the response is 204 (No Content), resolve immediately without parsing
+                        if (response.status === 204) {
+                            resolve(); // No content to parse, just resolve the promise
+                            return;
+                        }
+        
+                        // If there is content, parse it as JSON
+                        return response.text().then(text => {
+                            try {
+                                return text ? JSON.parse(text) : {}; // Try to parse JSON
+                            } catch (error) {
+                                console.error('Error parsing JSON:', error);
+                                return {}; // Return an empty object if parsing fails
+                            }
+                        });
                     })
                     .then((json) => {
-                        resolve(json);
+                        resolve(json); // Resolve with the parsed JSON or empty object
                     })
                     .catch((error) => {
                         console.error('Error:', error);
-                        reject(error);
+                        reject(error); // Reject with error if any
                     });
             });
         },
+        
+        
+        
         
         
 }

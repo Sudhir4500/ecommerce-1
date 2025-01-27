@@ -26,67 +26,67 @@ const Cartmodal = () => {
   const router = useRouter();
 
   // Fetch cart data on modal open
+  const fetchCartData = async () => {
+    try {
+      const response = await apiService.get("/api/cart/cart/");
+      console.log("Cart Response:", response);
+
+      const cartItems = Array.isArray(response) ? response : response.data || [];
+      setCartItems(cartItems);
+
+      const total = cartItems.reduce((sum: any, item: { total_price: any }) => sum + item.total_price, 0);
+      setTotalAmount(total);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCartData = async () => {
-      try {
-        const response = await apiService.get("/api/cart/cart/");
-        console.log("Cart Response:", response); // Debugging
-
-        // Extract cart items from response (adjust if response structure differs)
-        const cartItems = Array.isArray(response) ? response : response.data || [];
-
-        if (!Array.isArray(cartItems)) {
-          throw new Error("Invalid response format: cart items are not an array");
-        }
-
-        setCartItems(cartItems); // Set the cart items
-
-        // Calculate total amount
-        const total = cartItems.reduce((sum: number, item: CartItem) => {
-          const price = parseFloat(item.total_price.toString()); // Ensure valid number
-          return sum + (isNaN(price) ? 0 : price); // Avoid NaN
-        }, 0);
-
-        setTotalAmount(total); // Set total amount
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
-
     if (cartmodal.isOpen) {
-      if (!isLoggedIn) {
-        // If not logged in, open the login modal and prevent cart data fetching
-        loginModal.open();
-        alert("Please login to view your cart");
-        cartmodal.close(); // Close the cart modal
-      } else {
-        fetchCartData();
-      }
+      const checkAuth = async () => {
+        if (!isLoggedIn) {
+          loginModal.open();
+          alert("Please login to view your cart");
+          cartmodal.close();
+        } else {
+          fetchCartData();
+        }
+      };
+      checkAuth();
     }
   }, [cartmodal.isOpen, isLoggedIn, loginModal, cartmodal]);
 
-  // Handle delete function
+  // Handle delete function with optimistic UI update
   const handleDelete = async (id: string) => {
     try {
-      // Call API to delete the item from the server
-      await apiService.delete(`/api/cart/cart/${id}/`);
-
-      // Update the cart locally by removing the deleted item
+      // Optimistic update: immediately remove the item from the UI
       setCartItems((prevCartItems) => {
         const updatedCart = prevCartItems.filter((item) => item.id !== id);
-        // Recalculate total amount after removal
+        // Recalculate the total amount after removal
         const total = updatedCart.reduce((sum, item) => sum + item.total_price, 0);
         setTotalAmount(total);
         return updatedCart;
       });
+
+      // Call API to delete the item from the server
+      const response = await apiService.delete(`/api/cart/cart/${id}/`);
+      console.log('Delete response:', response);
+
+      // If delete fails (e.g., server returns an error), we need to restore the item (optional)
+      if (response.status !== 204) {
+        console.error("Delete operation failed, restoring cart...");
+        fetchCartData();
+      }
     } catch (error) {
       console.error("Error deleting item:", error);
+      // In case of error, re-fetch the data to restore the cart state
+      fetchCartData();
     }
   };
 
   const handleCheckout = () => {
     router.push("/Delivery"); // Redirect to checkout page
-  }
+  };
 
   const content = (
     <>
