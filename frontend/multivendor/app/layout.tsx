@@ -7,6 +7,7 @@ import SignupModal from "./components/modals/Signupmodal";
 import Vendormodal from "./components/modals/Vendormodal";
 import CategoriesList from "./components/category/CategoriesList";
 import AuthInitializer from "./components/AuthInitializer";
+import Footer from "./components/Footer";
 
 
 
@@ -45,7 +46,7 @@ export default function RootLayout({
       <LoginModal />
       <SignupModal />
       <Vendormodal />
-      
+      <Footer />
         </div>
       </body>
     </html>

@@ -73,7 +73,7 @@ const ProductDetail = () => {
 
     return (
         <>
-            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
+            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2 ">
                 <div>
                     <img
                         src={product.image}

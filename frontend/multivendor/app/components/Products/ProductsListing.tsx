@@ -18,7 +18,7 @@ const ProductsListing = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await apiService.getwithouttoken('/api/products/products/');
+            const response = await apiService.getwithouttoken('/api/products/products');
             console.log('Response:', response); // Debugging response
             setProducts(response); // Set products correctly
         } catch (err: any) {

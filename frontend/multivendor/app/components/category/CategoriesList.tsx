@@ -1,41 +1,39 @@
 'use client';
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation"; 
 import apiService from "@/app/services/apiservice";
 
 export type CategoryType = {
     id: string;
-    category_name: string;  // Ensure this matches the backend field
-}
+    category_name: string;
+};
 
-interface CategoriesListProps {
-  category: string;
-  setcategories: (category: string) => void;
-}
-
-const CategoriesList: React.FC<CategoriesListProps> = ({
-  category,
-  setcategories
-}) => {
+const CategoriesList = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get("search") || ""; // Get category from URL
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await apiService.getwithouttoken('/api/products/categories/');
-      console.log('Response:', response); // Should log: [{id: 1, category_name: 'mens'}, {id: 2, category_name: 'womens'}]
-      setCategories(response);  // Set categories correctly
-    } catch (err: any) {
-      console.error('Error fetching categories:', err);
-      setError(err.message);  // Update error if any
-    }
-  };
-
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await apiService.getwithouttoken('/api/products/categories/');
+        setCategories(response);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
     fetchCategories();
   }, []);
 
+  const handleCategoryClick = (categoryName: string) => {
+    router.push(`/categoryproduct?search=${encodeURIComponent(categoryName)}`); // ✅ Now routes correctly
+  };
+
   return (
-    <div className="flex max-w-screen-full -my-2 space-x-2 cursor-pointer">
+    <div className="flex space-x-2 cursor-pointer">
       {error ? (
         <div className="text-red-500">Failed to load categories: {error}</div>
       ) : (
@@ -43,8 +41,10 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
           categories.map((cat) => (
             <div 
               key={cat.id} 
-              onClick={() => setcategories(cat.category_name)} // Set selected category
-              className={`border-b-4 p-2 m-6 rounded-xl ${category === cat.category_name ? 'border-b-red-600' : 'hover:border-b-red-600'}`}>
+              onClick={() => handleCategoryClick(cat.category_name)}
+              className={`border-b-4 p-2 m-2 rounded-xl ${
+                selectedCategory === cat.category_name ? 'border-b-red-600' : 'hover:border-b-red-600'
+              }`}>
               {cat.category_name}
             </div>
           ))
@@ -54,6 +54,6 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
       )}
     </div>
   );
-}
+};
 
 export default CategoriesList;

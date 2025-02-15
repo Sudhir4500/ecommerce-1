@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import apiService from '@/app/services/apiservice';
 import { useRouter } from 'next/navigation';
+import AddressFetch from '../components/Address/AddressFetch';
 
 interface CartItem {
     id: string;
@@ -43,9 +44,9 @@ const ReviewOrder = () => {
             try {
                 setIsLoading(true);
                 const cartResponse = await apiService.get('/api/cart/cart/');
-                const addressResponse = await apiService.get('/api/deliveryaddress/');
+                
                 console.log('Cart Response:', cartResponse.data);
-            console.log('Address Response:', addressResponse.data);
+           
 
             // Ensure cartResponse.data is an array and pass it to setCartItems
             const cartItems = Array.isArray(cartResponse) ? cartResponse : cartResponse.data || [];
@@ -55,7 +56,7 @@ const ReviewOrder = () => {
             }
     
             setCartItems(cartItems);  // Ensure cartResponse.data is an array
-                setDeliveryAddress(addressResponse.data || null);
+                
                 setError(null);
             } catch (err: any) {
                 setError(err.message || 'Failed to fetch data.');
@@ -108,24 +109,7 @@ const ReviewOrder = () => {
                 )}
             </ul>
 
-            <h2 className="text-lg font-bold mb-2">Delivery Address</h2>
-            {deliveryAddress && deliveryAddress.length > 0 ? (
-                deliveryAddress.map((address, index) => (
-                    <div key={index} className="mb-4">
-                        <p>{address.full_name}</p>
-                        <p>{address.address}</p>
-                        <p>
-                            {address.city}, {address.state},{' '}
-                            {address.postal_code}
-                        </p>
-                        <p>{address.country}</p>
-                        <p>{address.phone_number}</p>
-                    </div>
-                ))
-            ) : (
-                <p className="mb-4">No delivery address found.</p>
-            )}
-
+           <AddressFetch/>
             <h2 className="text-lg font-bold mb-2">Payment Options</h2>
             <div className="mb-4">
                 <label className="block">
