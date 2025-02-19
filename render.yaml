@@ -4,7 +4,8 @@ services:
     env: python
     repo: https://github.com/Sudhir4500/ecommerce-1.git
     branch: version_3
-    buildCommand: pip install -r backend/requirements.txt
+    rootDir: backend/
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn core.wsgi:application
     envVars:
       - key: DEBUG
@@ -15,4 +16,3 @@ services:
         value: ".onrender.com"
       - key: DATABASE_URL
         value: "postgresql://ecommerce_5l6z_user:iEJpgvc7xJ6awcZbm0YhMJl8pdRdUGoN@dpg-cuqvdvqj1k6c73cnafag-a.oregon-postgres.render.com/ecommerce_5l6z"
-    rootDir: backend/
