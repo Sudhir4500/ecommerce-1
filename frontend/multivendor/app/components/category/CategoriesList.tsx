@@ -7,8 +7,14 @@ export type CategoryType = {
     id: string;
     category_name: string;
 };
-
-const CategoriesList = () => {
+interface CategoriesListProps {
+  category: string;
+  setcategories: (category: string) => void;
+}
+const CategoriesList:React.FC<CategoriesListProps> = ({
+  category,
+  setcategories
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("search") || ""; // Get category from URL

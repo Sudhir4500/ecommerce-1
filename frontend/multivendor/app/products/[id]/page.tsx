@@ -9,7 +9,8 @@ export type ProductType = {
     id: string;
     Product_name: string;
     price: number;
-    category: string;
+    // category: string;
+    category_name: string;
     image: string;
     description: string;
     vendor: string;
@@ -84,7 +85,7 @@ const ProductDetail = () => {
                 <div className="mt-10 ml-10">
                     <h1 className="text-xl font-bold">{product.Product_name}</h1>
                     <p className="text-gray-700 mt-3">Price: Rs {product.price}</p>
-                    <p className="text-gray-700 mt-4">Category: {product.category}</p>
+                    <p className="text-gray-700 mt-4">Category: {product.category_name}</p>
                     <p className="text-gray-700 mt-4 flex flex-col">
                         <span className="text-violet-500 font-extrabold">Description:</span>
                         {product.description}

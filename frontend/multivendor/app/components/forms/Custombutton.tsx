@@ -1,7 +1,7 @@
 
 interface CustombuttonProps {
     label: string;
-    onclick: () => void;
+    onclick: (e: React.FormEvent) => void;
     className?: string;
 }
 

@@ -12,8 +12,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['category__category_name','Product_name']  # Allows filtering by category name
-    # search using product name too
-    # search_fields = ['product_name']  # Allows filtering by product name
+   
 
     def perform_create(self, serializer):
         # Ensure the current user is a vendor

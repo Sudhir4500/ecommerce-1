@@ -8,6 +8,7 @@ import Vendormodal from "./components/modals/Vendormodal";
 import CategoriesList from "./components/category/CategoriesList";
 import AuthInitializer from "./components/AuthInitializer";
 import Footer from "./components/Footer";
+import Addproducts from "./components/modals/Addproducts";
 
 
 
@@ -43,6 +44,7 @@ export default function RootLayout({
          
           <AuthInitializer />
         {children}
+        <Addproducts />
       <LoginModal />
       <SignupModal />
       <Vendormodal />

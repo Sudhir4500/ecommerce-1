@@ -7,7 +7,7 @@ export type ProductType = {
     id: string;
     Product_name: string;
     price: number;
-    category: string;
+    category_name: string;
     image: string;
 };
 
@@ -56,7 +56,7 @@ const ProductsListing = () => {
                                 />
                                 <div className="text-center">{product.Product_name}</div>
                                 <div className="text-center">Price: Rs {product.price}</div>
-                                <div className="text-center">Category: {product.category}</div>
+                                <div className="text-center">Category: {product.category_name}</div>
                             </div>
                         ))}
                     </div>

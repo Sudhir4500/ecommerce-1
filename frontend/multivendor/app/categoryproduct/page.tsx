@@ -7,7 +7,8 @@ export type ProductType = {
   id: string;
   Product_name: string;
   price: number;
-  category: string;
+  // category: string | null;  // ✅ Ensure category can be null
+  category_name: string| null; // ✅ Add category_name for display
   image: string;
 };
 
@@ -24,9 +25,11 @@ const CategoryProductPage = () => {
         const response = await apiService.getwithouttoken('/api/products/products/');
         console.log('API Response:', response); // Debugging: Check what API returns
 
-        // ✅ Ensure products are filtered correctly
+        // ✅ Ensure products are filtered correctly and avoid errors
         const filteredProducts = category
-          ? response.filter((product: ProductType) => product.category.toLowerCase() === category.toLowerCase())
+          ? response.filter((product: ProductType) => 
+              (product.category_name?.toLowerCase() || '') === category.toLowerCase()
+            )
           : response;
 
         setProducts(filteredProducts);
