@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-oeh&*-f4be5@^+)xxbu&vv&=@8e1u0vzb()r*o+he)q3hi+0uq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost','*']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -102,9 +102,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.parse(os.environ.get('POSTGRES_URL'),conn_max_age=600, ssl_require=True)
 }
 
 
@@ -143,7 +142,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -190,4 +188,3 @@ SIMPLE_JWT = {
     "SIGNING_KEY": "acomplexkey",
     "ALOGRIGTHM": "HS512",
 }
-
