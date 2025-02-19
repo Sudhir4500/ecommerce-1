@@ -14,5 +14,5 @@ services:
         generateValue: true
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
-      - key: DATABASE_URL
+      - key: POSTGRES_URL
         value: "postgresql://ecommerce_5l6z_user:iEJpgvc7xJ6awcZbm0YhMJl8pdRdUGoN@dpg-cuqvdvqj1k6c73cnafag-a.oregon-postgres.render.com/ecommerce_5l6z"
