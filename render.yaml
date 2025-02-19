@@ -2,7 +2,7 @@ services:
   - type: web
     name: e-commerce-backend
     runtime: python
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: cd backend && pip install -r requirements.txt
     startCommand: gunicorn core.wsgi:application
     envVars:
       - key: DEBUG
