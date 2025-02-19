@@ -3,7 +3,7 @@ services:
     name: e-commerce-backend
     runtime: python
     buildCommand: pip install -r backend/requirements.txt
-    startCommand: gunicorn backend.your_project_name.wsgi:application
+    startCommand: gunicorn core.wsgi:application
     envVars:
       - key: DEBUG
         value: "False"
