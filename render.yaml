@@ -2,7 +2,7 @@ services:
   - type: web
     name: e-commerce-backend
     runtime: python
-    buildCommand: pip install -r requirements.txt  # Use pip, no need to convert Poetry to requirements.txt
+    buildCommand: pip install -r \backend\requirements.txt  # Use pip, no need to convert Poetry to requirements.txt
     startCommand: gunicorn core.wsgi:application
     envVars:
       - key: DEBUG
