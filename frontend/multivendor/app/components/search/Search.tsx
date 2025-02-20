@@ -1,5 +1,3 @@
-// app/components/Search.tsx
-
 'use client';
 
 import { useRouter } from "next/navigation";
@@ -21,13 +19,13 @@ const Search = () => {
     return (
         <form
             onSubmit={handlesearch}
-            className="flex justify-between gap-4 bg-gray-100 p-2 rounded-md border"
+            className="flex justify-between gap-4 bg-gray-100 p-2 rounded-md border "
         >
             <input
                 type="text"
                 name="name"
                 placeholder="Search for products or category..."
-                className="outline-none bg-transparent"
+                className="outline-none bg-transparent w-full"
             />
             <button className="cursor-pointer">
                 <svg

@@ -20,9 +20,10 @@ const Navbar = async () => {
             </Link>
           </div>
           <div className=" flex items-center space-x-6">
-            <div className=" flex items-center space-x-3 w-2/3 gap-6 ">
-              <Search />
-            </div>
+          <div className="flex items-center space-x-3 w-full  mx-auto gap-6">
+    <Search />
+</div>
+
             {/* <div className=" cursor-pointer">
               <BecomeVendorButton userId={userId} />
               <AddpropertyButton />
