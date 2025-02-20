@@ -15,6 +15,7 @@ interface CartItem {
   price: number;
   total_price: number; // Ensure this is a number and correctly formatted
   product_name: string;
+  
 }
 
 const Cartmodal = () => {

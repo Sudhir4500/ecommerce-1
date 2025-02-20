@@ -4,6 +4,8 @@ import usecartModal from "@/app/hooks/usecartmodal";
 import Cartmodal from "./Cartmodal";
 
 
+
+
 const Carticon = () => {
     const cartmodal = usecartModal();
 
@@ -28,7 +30,7 @@ const Carticon = () => {
 
             {cartmodal.isOpen && (
                 <div className="w-[200px] absolute top-[60px] right-0 bg-white">
-                    <Cartmodal onClick={cartmodal.close} />
+                    <Cartmodal  />
                 </div>
             )}
         </div>
