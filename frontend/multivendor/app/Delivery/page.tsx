@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import apiService from "@/app/services/apiservice";
 import { useRouter } from "next/navigation";
 
@@ -18,7 +18,6 @@ const DeliveryAddressForm = () => {
     const [success, setSuccess] = useState<string | null>(null);
     const router = useRouter();
 
-    // Handle the form data change for input fields
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
             ...formData,
@@ -26,26 +25,14 @@ const DeliveryAddressForm = () => {
         });
     };
 
-    // Form submission handler
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Check if the form has empty required fields
-        if (Object.values(formData).some(field => field === "")) {
-            setError("All fields are required.");
-            return;
-        }
-
         try {
-            // Sending form data to the backend API
             const response = await apiService.post('/api/deliveryaddress/', formData);
-            if (response && response.status === 200) {
-                setSuccess("Delivery address saved successfully!");
-                setError(null);
-                router.push("/review"); // Redirect to the review page
-            } else {
-                throw new Error("Failed to save delivery address.");
-            }
+            setSuccess("Delivery address saved successfully!");
+            setError(null);
+            router.push("/review");
         } catch (err: any) {
             setError(err.message || "Something went wrong.");
             setSuccess(null);
@@ -55,11 +42,8 @@ const DeliveryAddressForm = () => {
     return (
         <div className="max-w-lg mx-auto">
             <h1 className="text-2xl font-bold mb-4">Delivery Address</h1>
-            {/* Error and Success messages */}
-            {error && <div className="text-red-500 mb-4">{error}</div>}
-            {success && <div className="text-green-500 mb-4">{success}</div>}
-
-            {/* The form to submit the delivery address */}
+            {error && <div className="text-red-500">{error}</div>}
+            {success && <div className="text-green-500">{success}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="full_name" className="block font-bold">Full Name</label>
@@ -85,6 +69,7 @@ const DeliveryAddressForm = () => {
                         required
                     />
                 </div>
+            
                 <div className="mb-4">
                     <label htmlFor="city" className="block font-bold">City</label>
                     <input
