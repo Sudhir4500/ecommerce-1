@@ -8,8 +8,8 @@ export type CategoryType = {
     category_name: string;
 };
 interface CategoriesListProps {
-  category: string;
-  setcategories: (category: string) => void;
+  category?: string;  // category name or selected category
+  setcategories?: (category: string) => void;  // setter function to update category
 }
 const CategoriesList:React.FC<CategoriesListProps> = ({
   category,
