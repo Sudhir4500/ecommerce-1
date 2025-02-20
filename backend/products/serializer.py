@@ -29,6 +29,7 @@ class productSerializer(serializers.ModelSerializer):
     # category = serializers.CharField(source='category.category_name')
     category = serializers.PrimaryKeyRelatedField(queryset=category.objects.all())
     category_name = serializers.CharField(source='category.category_name', read_only=True)
+    image=serializers.SerializerMethodField()
     # category = serializers.PrimaryKeyRelatedField(queryset=category.objects.all())
     vendor = serializers.PrimaryKeyRelatedField(queryset=Vendor.objects.all(), required=False)  # Make it required=False, as it's set automatically
 
@@ -44,5 +45,9 @@ class productSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Vendor must be specified.")
         
         return super().create(validated_data)
+    
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url
 
     

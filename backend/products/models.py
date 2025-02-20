@@ -1,5 +1,5 @@
 from django.db import models
-# from cloudinary.models import CloudinaryField
+from cloudinary.models import CloudinaryField
 import uuid
 
 
@@ -17,7 +17,8 @@ class product(models.Model):
     Product_name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='staticfiles/products/', blank=True)
+    # image = models.ImageField(upload_to='staticfiles/products/', blank=True)
+    image=CloudinaryField('image')
     stock = models.IntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
