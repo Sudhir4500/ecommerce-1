@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; 
 import apiService from "@/app/services/apiservice";
 
+
 export type ProductType = {
   id: string;
   Product_name: string;
   price: number;
-  // category: string | null;  // ✅ Ensure category can be null
-  category_name: string| null; // ✅ Add category_name for display
+  category_name: string | null;
   image: string;
 };
 
@@ -25,7 +25,6 @@ const CategoryProductPage = () => {
         const response = await apiService.getwithouttoken('/api/products/products/');
         console.log('API Response:', response); // Debugging: Check what API returns
 
-        // ✅ Ensure products are filtered correctly and avoid errors
         const filteredProducts = category
           ? response.filter((product: ProductType) => 
               (product.category_name?.toLowerCase() || '') === category.toLowerCase()
@@ -40,9 +39,8 @@ const CategoryProductPage = () => {
     };
 
     fetchProducts();
-  }, [category]); // 🔥 Runs when category changes
+  }, [category]); // Runs when category changes
 
-  // Handler to navigate to the product detail page
   const handleProductClick = (productId: string) => {
     router.push(`/products/${productId}`); // Navigate to product detail page
   };

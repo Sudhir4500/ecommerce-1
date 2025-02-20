@@ -9,6 +9,7 @@ import CategoriesList from "./components/category/CategoriesList";
 import AuthInitializer from "./components/AuthInitializer";
 import Footer from "./components/Footer";
 import Addproducts from "./components/modals/Addproducts";
+import { Suspense } from "react";
 
 
 
@@ -34,16 +35,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <Suspense>
     <html lang="en">
+     
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
         <div className=" pt-24">
           <CategoriesList />
-         
+
           <AuthInitializer />
+          
+
         {children}
+         
         <Addproducts />
       <LoginModal />
       <SignupModal />
@@ -52,5 +58,6 @@ export default function RootLayout({
         </div>
       </body>
     </html>
+    </Suspense>
   );
 }

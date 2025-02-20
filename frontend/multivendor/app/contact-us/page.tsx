@@ -3,7 +3,7 @@
 const page = () => {
   return (
     <div>
-      contact us
+      contact US
     </div>
   )
 }
