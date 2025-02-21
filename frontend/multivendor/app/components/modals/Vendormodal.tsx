@@ -25,7 +25,7 @@ const Vendormodal = () => {
             };
 
             try {
-                const response = await apiService.post('/api/vendors/', payload);
+                const response = await apiService.post('/api/vendors/', JSON.stringify(payload));
 
                 if (response.id) {
                     vendorModal.close(); // Close the modal on success
