@@ -13,7 +13,7 @@ export type ProductType = {
     category_name: string;
     image: string;
     description: string;
-    vendor: string;
+    vendor_name: string;
     
 };
 
@@ -100,7 +100,7 @@ const ProductDetail = () => {
                             className="border border-gray-300 rounded px-2 py-1"
                         />
                     </p>
-                    <p className="text-blue-600 mt-4">Vendor: {product.vendor}</p>
+                    <p className="text-blue-600 mt-4">Vendor: {product.vendor_name}</p>
                     <button
                         onClick={handleAddToCart}
                         disabled={loading}

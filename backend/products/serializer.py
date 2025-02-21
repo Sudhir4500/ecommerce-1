@@ -29,12 +29,13 @@ class productSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=category.objects.all())
     category_name = serializers.CharField(source='category.category_name', read_only=True)
     vendor = serializers.PrimaryKeyRelatedField(queryset=Vendor.objects.all(), required=False)
+    vendor_name = serializers.CharField(source='vendor.company_name', read_only=True)
     image = serializers.ImageField(max_length=None, use_url=True, required=False
     )
 
     class Meta:
         model = product
-        fields = ['id', 'vendor', 'Product_name', 'category', 'category_name', 'price', 'description', 'image', 'stock', 'created_at', 'updated_at']
+        fields = ['id', 'vendor', 'Product_name', 'category', 'category_name','vendor_name' ,'price', 'description', 'image', 'stock', 'created_at', 'updated_at']
         read_only_fields = ['vendor', 'created_at', 'updated_at']
 
     def create(self, validated_data):
