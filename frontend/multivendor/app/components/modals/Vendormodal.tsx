@@ -25,11 +25,12 @@ const Vendormodal = () => {
             };
 
             try {
-                const response = await apiService.post('/api/vendors/vendors_profile/', payload);
+                const response = await apiService.post('/api/vendors/', payload);
 
                 if (response.id) {
                     vendorModal.close(); // Close the modal on success
-                    router.push('/'); // Redirect to the homepage or desired page
+                    // refresh the page
+                    window.location.reload();
                 } else {
                     setError([response.detail || "Something went wrong"]); // Show error if no response ID
                 }

@@ -26,24 +26,21 @@ class CategorySerializer(serializers.ModelSerializer):
 # from .models import product
 
 class productSerializer(serializers.ModelSerializer):
-    # category = serializers.CharField(source='category.category_name')
     category = serializers.PrimaryKeyRelatedField(queryset=category.objects.all())
     category_name = serializers.CharField(source='category.category_name', read_only=True)
-    image=serializers.SerializerMethodField()
-    # category = serializers.PrimaryKeyRelatedField(queryset=category.objects.all())
-    vendor = serializers.PrimaryKeyRelatedField(queryset=Vendor.objects.all(), required=False)  # Make it required=False, as it's set automatically
+    vendor = serializers.PrimaryKeyRelatedField(queryset=Vendor.objects.all(), required=False)
+    image = serializers.ImageField(max_length=None, use_url=True, required=False
+    )
 
     class Meta:
         model = product
-        fields = ['id', 'vendor', 'Product_name', 'category','category_name', 'price', 'description', 'image', 'stock', 'created_at', 'updated_at']
-        read_only_fields = ['vendor', 'created_at', 'updated_at']  # Make vendor read-only, since it's set automatically
+        fields = ['id', 'vendor', 'Product_name', 'category', 'category_name', 'price', 'description', 'image', 'stock', 'created_at', 'updated_at']
+        read_only_fields = ['vendor', 'created_at', 'updated_at']
 
     def create(self, validated_data):
-        # Explicitly handle the creation of the product
-        vendor = validated_data.get('vendor', None)
-        if vendor is None:
-            raise serializers.ValidationError("Vendor must be specified.")
-        
+        # Ensure the vendor is set to the current user's vendor profile
+        vendor = self.context['request'].user.vendor
+        validated_data['vendor'] = vendor
         return super().create(validated_data)
     
     def get_image(self, obj):

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Vendor
 from .serializers import VendorSerializer
 from .permission import IsOwnerOrReadOnly  # Assuming a custom permission for ownership
+from rest_framework.decorators import action
 
 class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
@@ -20,6 +21,23 @@ class VendorViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    # get only the vendors created by the logged in user
+    def get_queryset(self):
+        """Ensure users can only view their own vendor profile."""
+        if self.request.user.is_authenticated:
+            return Vendor.objects.filter(username=self.request.user)
+        return Vendor.objects.none()  # Return empty queryset if not logged in
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def my_profile(self, request):
+        """Get the vendor profile of the logged-in user."""
+        vendor = Vendor.objects.filter(username=request.user).first()
+        if vendor:
+            serializer = VendorSerializer(vendor)
+            return Response(serializer.data)
+        return Response({"detail": "Vendor profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request, *args, **kwargs):
         """Override create to provide custom error handling."""

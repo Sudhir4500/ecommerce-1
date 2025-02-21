@@ -7,8 +7,8 @@ export async function handleRefresh() {
 
     const refreshToken = await getRefreshToken();
     if (!refreshToken) return null;
-
-    const token = await fetch('http://localhost:8000/api/auth/token/refresh/', {
+    const fetchtoken=process.env.NEXT_PUBLIC_API_URL
+    const token = await fetch(`${fetchtoken}/api/auth/token/refresh/`, {
         method: 'POST',
         body: JSON.stringify({ refresh: refreshToken }),
         headers: {
@@ -80,6 +80,10 @@ export async function getUserId() {
     const userId = (await cookies()).get('session_userid')?.value
     return userId ? userId : null
 }
+// lib/actions.ts
+
+
+  
 
 export async function getAccessToken() {
     let accessToken = (await cookies()).get('session_access_token')?.value;
@@ -97,4 +101,3 @@ export async function getRefreshToken() {
 
     return refreshToken;
 }
-
