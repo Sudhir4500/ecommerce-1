@@ -23,9 +23,7 @@ const VendorCheck: React.FC<{ email: string | null }> = ({ email }) => {
 
       try {
         // Fetch vendor profile
-        const vendorData = await apiService.get(`/api/vendors/my_profile/`, {
-          params: { email },
-        });
+        const vendorData = await apiService.get(`/api/vendors/my_profile/`,);
 
         // Check if the vendor profile exists
         if (vendorData && vendorData.email) {

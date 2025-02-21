@@ -71,7 +71,7 @@ const Addproducts = ({
     formData.append("image", image);
 
     try {
-      const response = await apiService.postwithany("/api/products/products/", formData);
+      const response = await apiService.post("/api/products/products/", formData);
       console.log("Product added:", response);
 if(response.id){
       alert("Product added successfully");
