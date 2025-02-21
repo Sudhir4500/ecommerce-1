@@ -14,15 +14,15 @@ const AuthInitializer = () => {
 
       if (accessToken) {
         // If an access token exists, validate it
-        setLoggedIn(true);
+        setLoggedIn(true, null);
       } else {
         // If no access token, try refreshing the token
         const newAccessToken = await getAccessToken();
 
         if (newAccessToken) {
-          setLoggedIn(true); // Set user as logged in after refreshing token
+          setLoggedIn(true, null); // Set user as logged in after refreshing token
         } else {
-          setLoggedIn(false); // Token refresh failed, keep user logged out
+          setLoggedIn(false, null); // Token refresh failed, keep user logged out
         }
       }
     };
