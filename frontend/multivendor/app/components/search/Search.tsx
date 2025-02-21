@@ -19,15 +19,15 @@ const Search = () => {
     return (
         <form
             onSubmit={handlesearch}
-            className="flex justify-between gap-4 bg-gray-100 p-2 rounded-md border "
+            className="flex items-center gap-4 bg-gray-100 p-2 rounded-md border w-full max-w-md mx-auto"
         >
             <input
                 type="text"
                 name="name"
                 placeholder="Search for products or category..."
-                className="outline-none bg-transparent w-full"
+                className="outline-none bg-transparent w-full flex-1 min-w-0 transition-all duration-300 md:focus:w-[150%]"
             />
-            <button className="cursor-pointer">
+            <button type="submit" className="cursor-pointer shrink-0">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

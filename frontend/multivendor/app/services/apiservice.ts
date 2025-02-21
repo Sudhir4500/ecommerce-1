@@ -42,25 +42,36 @@ const apiService = {
 
     post: async function(url: string, data: any, config: { headers?: Record<string, string> } = {}): Promise<any> {
         const token = await getAccessToken();
-        const headers = {
+        const headers: Record<string, string> = {
             'Accept': 'application/json',
             'Authorization': `Bearer ${token}`,
             ...config.headers
         };
-
-        return new Promise((resolve, reject) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
-                method: 'POST',
-                headers: data instanceof FormData ? { 'Authorization': `Bearer ${token}` } : headers,
-                body: data instanceof FormData ? data : JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then((json) => {
-                resolve(json);
-            })
-            .catch((error) => {
-                reject(error);
-            });
+    
+        // Set Content-Type to application/json if data is not FormData
+        if (!(data instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
+        }
+    
+        return fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+            method: 'POST',
+            headers: data instanceof FormData ? { 'Authorization': `Bearer ${token}` } : headers,
+            body: data instanceof FormData ? data : JSON.stringify(data)
+        })
+        .then(async (response) => {
+            if (!response.ok) {
+                // Handle HTTP errors (e.g., 400, 500)
+                const errorResponse = await response.json();
+                throw new Error(errorResponse.detail || 'Something went wrong');
+            }
+            return response.json();
+        })
+        .then((json) => {
+            return json;
+        })
+        .catch((error) => {
+            console.error('API Error:', error);
+            throw error;
         });
     },
 
