@@ -87,7 +87,7 @@ const ProductDetail = () => {
                     <p className="text-gray-700 mt-3">Price: Rs {product.price}</p>
                     <p className="text-gray-700 mt-4">Category: {product.category_name}</p>
                     <p className="text-gray-700 mt-4 flex flex-col">
-                        <span className="text-violet-500 font-extrabold break-words">Description:</span>
+                        <span className="text-violet-500 font-extrabold break-words ">Description:</span>
                         {product.description}
                     </p>
                     <p className="text-gray-700 mt-4">

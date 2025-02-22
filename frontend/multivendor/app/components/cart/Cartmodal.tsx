@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import Modal from "../modals/Modal";
 import usecartModal from "@/app/hooks/usecartmodal";
 import useAuthStore from "@/app/hooks/isloggedin";
@@ -25,7 +25,7 @@ const Cartmodal = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const router = useRouter();
 
-  const fetchCartData = async () => {
+  const fetchCartData = useCallback(async () => {
     try {
       const response = await apiService.get("/api/cart/cart/");
       const cartItems = Array.isArray(response) ? response : response.data || [];
@@ -35,7 +35,7 @@ const Cartmodal = () => {
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (cartmodal.isOpen) {
