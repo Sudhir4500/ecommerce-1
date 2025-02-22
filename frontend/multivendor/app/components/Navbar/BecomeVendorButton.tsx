@@ -5,9 +5,10 @@ import usevendorModal from "@/app/hooks/usevendor";
 interface addvendorProps {
   userId?: string | null;
   isVendor?: boolean; // Add isVendor prop
+  className?: string;
 }
 
-const BecomeVendorButton: React.FC<addvendorProps> = ({ userId, isVendor }) => {
+const BecomeVendorButton: React.FC<addvendorProps> = ({ userId, isVendor,className }) => {
   const loginmodel = useLoginModal();
   const vendorModel = usevendorModal();
 
@@ -29,7 +30,7 @@ const BecomeVendorButton: React.FC<addvendorProps> = ({ userId, isVendor }) => {
   return (
       <div
           onClick={handleBecomeVendor}
-          className="flex items-center justify-center p-2 text-[12px] font-semibold text-white bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200 "
+          className={`${className}`}
       >
           Become a vendor
       </div>

@@ -25,7 +25,9 @@ const Navbar = async () => {
 
             {userId && (
               <div className="cursor-pointer">
-                <VendorCheck email={userId} /> {/* Pass userId as email to VendorCheck */}
+                <VendorCheck email={userId}
+                className="hidden sm:hidden md:hidden lg:block"
+                /> {/* Pass userId as email to VendorCheck */}
               </div>
             )}
 

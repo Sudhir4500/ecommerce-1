@@ -5,9 +5,10 @@ import usepropertylistingModal from "@/app/hooks/usepropertylisting";
 interface AddpropertyButtonProps {
   userId?: string | null; // userId to check if the user is logged in
   id?: string | null; // id to check if the user is a vendor
+  className?: string;
 }
 
-const AddpropertyButton: React.FC<AddpropertyButtonProps> = ({ userId, id }) => {
+const AddpropertyButton: React.FC<AddpropertyButtonProps> = ({ userId, id,className}) => {
   const vendorModel = usevendorModal();
   const ProductsListing = usepropertylistingModal();
 
@@ -26,7 +27,7 @@ const AddpropertyButton: React.FC<AddpropertyButtonProps> = ({ userId, id }) => 
   return (
     <div
       onClick={handleAddproperty} // Trigger handleAddproperty on click
-       className="flex items-center justify-center p-2 text-[12px] font-semibold text-white bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200"
+       className={`cursor-pointer ${className}`}
     >
       Add Products
     </div>

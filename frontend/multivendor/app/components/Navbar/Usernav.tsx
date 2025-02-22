@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoutButton from "../Logoutbutton";
 import MenuLink from "./MenuLink";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "@/app/hooks/useSignupModal";
+import VendorCheck from "../vendorcheck/CheckVendorStatus";
 
 
 
@@ -20,6 +21,9 @@ const Usernav:React.FC<usernavprops> = ({
   const loginmodal=useLoginModal();
   const Signupmodal=useSignupModal();
   const [isOpen, setIsOpen] = useState(false);
+  
+
+
   return (
     <div className=" p-2 relative inline-block border rounded-full ">
         <button 
@@ -37,7 +41,12 @@ const Usernav:React.FC<usernavprops> = ({
             {isOpen &&(
               <div className="w-[200px] absolute top-[60px] right-0 bg-white">
                 {userId?(
+                  <>
+                  <VendorCheck  email={userId}
+                  className="lg:hidden "
+                  />
                   <LogoutButton/>
+                  </>
                 ):(
                   <>
                   <MenuLink
