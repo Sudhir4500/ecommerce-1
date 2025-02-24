@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import PermissionDenied
 from .models import category, product
 from .serializer import CategorySerializer, productSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from vendormanagement.models import Vendor  # Ensure this import is correct based on your app structure
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['category__category_name', 'Product_name']
-    parser_classes = [MultiPartParser, FormParser]  # Add this to handle file uploads
+    parser_classes = [MultiPartParser, FormParser,JSONParser]  # Add this to handle file uploads
 
     def perform_create(self, serializer):
         # Ensure the current user is a vendor

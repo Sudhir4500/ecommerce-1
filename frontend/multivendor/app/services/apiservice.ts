@@ -98,7 +98,7 @@ const apiService = {
     delete: async function (url: string): Promise<any> {
         const token = await getAccessToken();
         return new Promise<void>((resolve, reject) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}/`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',

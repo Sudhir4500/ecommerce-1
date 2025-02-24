@@ -1,4 +1,4 @@
-// components/vendorProduct/VendorProduct.tsx
+// app/vendorProduct/VendorProduct.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from "react";
@@ -36,7 +36,7 @@ const VendorProduct = () => {
   }, [fetchProducts]);
 
   const handleProductClick = (id: string) => {
-    router.push(`/products/${id}`);
+    router.push(`/vendorsproducts/${id}`);
   };
 
   if (loading) return <div className="text-center">Loading...</div>;
