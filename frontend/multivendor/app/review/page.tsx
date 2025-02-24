@@ -101,7 +101,8 @@ const ReviewOrder = () => {
                 {cartItems && cartItems.length > 0 ? ( // Safely check cartItems before accessing length
                     cartItems.map((item: CartItem) => (
                         <li key={item.id} className="mb-2">
-                        {item.product_name|| item.product_name} - Quantity: {item.quantity}
+                            <span className=' font-semibold '> {item.product_name|| item.product_name}</span>
+                        - Quantity: {item.quantity}
                     </li>
                     ))
                 ) : (

@@ -22,13 +22,13 @@ const AddressFetch = () => {
             console.log('Fetching delivery address...');
             const response = await apiService.get('/api/deliveryaddress/');
             console.log('Raw API Response:', response);
-            console.log('Response Data:', response.data);
-            console.log('Is Array:', Array.isArray(response.data));
 
-            // Ensure response.data is an array
-            if (Array.isArray(response.data)) {
-                console.log('Parsed Addresses:', response.data);
-                setDeliveryAddress(response.data); // Update state with the array
+            // Check if the response is an array or if the data is nested in a `data` property
+            const data = Array.isArray(response) ? response : response.data;
+
+            if (Array.isArray(data)) {
+                console.log('Parsed Addresses:', data);
+                setDeliveryAddress(data); // Update state with the array
             } else {
                 console.error('Invalid response format: Expected an array');
                 setDeliveryAddress([]); // Set to empty array if response is not an array
