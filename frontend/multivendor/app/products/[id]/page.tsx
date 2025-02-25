@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import apiService from '@/app/services/apiservice';
 import useCartModal from '@/app/hooks/usecartmodal';
+import ConfirmationModal from '@/app/components/forms/ConfirmationModal';
 
 export type ProductType = {
     id: string;
@@ -24,6 +25,12 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState<number>(1); // For quantity input
     const [loading, setLoading] = useState(false); // For button loading state
     const cartModal = useCartModal(); // To manage cart modal
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen]=useState(false)
+    const [modalMessage,setModalMessage]=useState("")
+
+    const handleconfirm=()=>{
+        setIsConfirmationModalOpen(false);
+    }
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -44,6 +51,7 @@ const ProductDetail = () => {
     const handleAddToCart = async () => {
         if (!product) return;
         setLoading(true);
+        
 
         try {
             // Make an API call to add the product to the cart
@@ -57,7 +65,11 @@ const ProductDetail = () => {
             // cartModal.open();
         } catch (err) {
             console.error('Failed to add product to cart:', err);
-            alert('Failed to add product to cart');
+            // alert('Failed to add product to cart');
+            setModalMessage("Failed to add product to cart!! Please login");
+            setIsConfirmationModalOpen(true)
+
+           
             
         } finally {
             setLoading(false);
@@ -111,7 +123,17 @@ const ProductDetail = () => {
                         {loading ? 'Adding...' : 'Add to Cart'}
                     </button>
                 </div>
+                
             </div>
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                onClose={()=>setIsConfirmationModalOpen(false)}
+                onConfirm={handleconfirm}
+                title='Error '
+                message={modalMessage}
+                confirmText='OK'
+                showCancelButton={false}
+                />
         </>
     );
 };

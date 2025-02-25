@@ -7,6 +7,8 @@ import useAuthStore from "@/app/hooks/isloggedin";
 import apiService from "@/app/services/apiservice";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import { useRouter } from "next/navigation";
+import ConfirmationModal from "../forms/ConfirmationModal";
+
 
 interface CartItem {
   id: string;
@@ -43,6 +45,7 @@ const Cartmodal = () => {
         if (!isLoggedIn) {
           loginModal.open();
           alert("Please login to view your cart");
+          
           cartmodal.close();
         } else {
           fetchCartData();
@@ -61,7 +64,7 @@ const Cartmodal = () => {
         return updatedCart;
       });
 
-      const response = await apiService.delete(`/api/cart/cart/${id}/`);
+      const response = await apiService.delete(`/api/cart/cart/${id}`);
       if (response.status !== 204) {
         fetchCartData();
       }
@@ -110,6 +113,7 @@ const Cartmodal = () => {
       fetchCartData(); // Revert to the correct state if the API fails
     }
   };
+  
 
   const handleCheckout = () => {
     router.push("/Delivery");
@@ -184,6 +188,7 @@ const Cartmodal = () => {
   return (
     <div>
       <Modal isOpen={cartmodal.isOpen} close={cartmodal.close} label="Your Cart" content={content} />
+     
     </div>
   );
 };

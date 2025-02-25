@@ -25,6 +25,7 @@ const Addproducts = () => {
   const [error, setError] = useState<string | null>(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const productlisting = usepropertylistingModal();
   const router = useRouter();
@@ -56,10 +57,12 @@ const Addproducts = () => {
       !image
     ) {
       setModalMessage("Please fill in all fields");
+      
       setIsConfirmationModalOpen(true);
+      
       return;
     }
-
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("Product_name", productname);
     formData.append("price", productprice);
@@ -70,7 +73,10 @@ const Addproducts = () => {
 
     try {
       const response = await apiService.post("/api/products/products/", formData);
+
+
       if (response.id) {
+       
         setModalMessage("Product added successfully");
         setIsConfirmationModalOpen(true); // Show success modal
       } else {
@@ -81,6 +87,9 @@ const Addproducts = () => {
       console.error("Error adding product:", error);
       setModalMessage("Failed to add product");
       setIsConfirmationModalOpen(true); // Show error modal
+    }
+    finally {
+    setIsLoading(false);
     }
   };
 
@@ -93,9 +102,11 @@ const Addproducts = () => {
 
   const handleConfirm = () => {
     setIsConfirmationModalOpen(false); // Close the modal
-    productlisting.close(); // Close the product listing modal
-    window.location.reload(); // Refresh the page
-    router.push("/vendorproduct"); // Redirect to the vendor product page
+    if (modalMessage.includes("successfully")) {
+      productlisting.close(); // Close the product listing modal
+      window.location.reload(); // Refresh the page
+      router.push("/vendorproduct"); // Redirect to the vendor product page
+    }
   };
 
   const content = (
@@ -181,9 +192,11 @@ const Addproducts = () => {
               className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200"
             />
             <Custombutton
-              label="Submit"
+               label={isLoading ? "Submitting..." : "Submit"}
               onclick={handlesubmit}
-              className="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+              disabled={isLoading} 
+              // className="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+              className={isLoading ? "opacity-50 cursor-not-allowed flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200" : "flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"}
             />
           </div>
         </>
