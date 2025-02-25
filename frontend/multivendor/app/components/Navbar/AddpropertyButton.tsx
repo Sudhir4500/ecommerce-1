@@ -27,7 +27,7 @@ const AddpropertyButton: React.FC<AddpropertyButtonProps> = ({ userId, id,classN
   return (
     <div
       onClick={handleAddproperty} // Trigger handleAddproperty on click
-       className={`cursor-pointer ${className}`}
+       className={` ${className}`}
     >
       Add Products
     </div>

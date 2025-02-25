@@ -9,8 +9,7 @@ interface VendorProductButtonProps {
 }
 
 const VendorProductButton: React.FC<VendorProductButtonProps> = ({
-  onClick,
-  
+ 
   className = '',
   disabled = false,
 }) => {

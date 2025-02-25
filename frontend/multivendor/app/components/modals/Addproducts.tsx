@@ -101,6 +101,7 @@ const Addproducts = () => {
   };
 
   const handleConfirm = () => {
+    
     setIsConfirmationModalOpen(false); // Close the modal
     if (modalMessage.includes("successfully")) {
       productlisting.close(); // Close the product listing modal
