@@ -5,17 +5,16 @@ import { useParams } from 'next/navigation';
 import apiService from '@/app/services/apiservice';
 import useCartModal from '@/app/hooks/usecartmodal';
 import ConfirmationModal from '@/app/components/forms/ConfirmationModal';
+import { useLoading } from '@/app/context/Loadingcontext'; // Import the useLoading hook
 
 export type ProductType = {
     id: string;
     Product_name: string;
     price: number;
-    // category: string;
     category_name: string;
     image: string;
     description: string;
     vendor_name: string;
-    
 };
 
 const ProductDetail = () => {
@@ -23,35 +22,38 @@ const ProductDetail = () => {
     const [product, setProduct] = useState<ProductType | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState<number>(1); // For quantity input
-    const [loading, setLoading] = useState(false); // For button loading state
+    const { loading, setLoading } = useLoading(); // To manage loading state
+    // const [loading, setLoading] = useState<boolean>(true);
     const cartModal = useCartModal(); // To manage cart modal
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen]=useState(false)
-    const [modalMessage,setModalMessage]=useState("")
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
-    const handleconfirm=()=>{
+    const handleConfirm = () => {
         setIsConfirmationModalOpen(false);
-    }
+    };
 
     useEffect(() => {
         const fetchProduct = async () => {
+            setLoading(true); // Start loading
             try {
                 const response = await apiService.getwithouttoken(`/api/products/products/${id}/`);
                 setProduct(response); // Set the product data
             } catch (err: any) {
                 console.error('Error fetching product details:', err);
                 setError('Failed to fetch product details.');
+            } finally {
+                setLoading(false); // Stop loading
             }
         };
 
         if (id) {
             fetchProduct();
         }
-    }, [id]);
+    }, [id, setLoading]);
 
     const handleAddToCart = async () => {
         if (!product) return;
-        setLoading(true);
-        
+        setLoading(true); // Start loading
 
         try {
             // Make an API call to add the product to the cart
@@ -65,14 +67,10 @@ const ProductDetail = () => {
             // cartModal.open();
         } catch (err) {
             console.error('Failed to add product to cart:', err);
-            // alert('Failed to add product to cart');
             setModalMessage("Failed to add product to cart!! Please login");
-            setIsConfirmationModalOpen(true)
-
-           
-            
+            setIsConfirmationModalOpen(true);
         } finally {
-            setLoading(false);
+            setLoading(false); // Stop loading
         }
     };
 
@@ -86,7 +84,7 @@ const ProductDetail = () => {
 
     return (
         <>
-            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2 ">
+            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
                 <div>
                     <img
                         src={product.image}
@@ -99,7 +97,7 @@ const ProductDetail = () => {
                     <p className="text-gray-700 mt-3">Price: Rs {product.price}</p>
                     <p className="text-gray-700 mt-4">Category: {product.category_name}</p>
                     <p className="text-gray-700 mt-4 flex flex-col">
-                        <span className="text-violet-500 font-extrabold break-words ">Description:</span>
+                        <span className="text-violet-500 font-extrabold break-words">Description:</span>
                         {product.description}
                     </p>
                     <p className="text-gray-700 mt-4">
@@ -117,23 +115,22 @@ const ProductDetail = () => {
                         onClick={handleAddToCart}
                         disabled={loading}
                         className={`bg-blue-500 text-white px-4 py-2 mt-4 rounded ${
-                            loading ? 'opacity-50' : ''
+                            loading ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                     >
                         {loading ? 'Adding...' : 'Add to Cart'}
                     </button>
                 </div>
-                
             </div>
             <ConfirmationModal
                 isOpen={isConfirmationModalOpen}
-                onClose={()=>setIsConfirmationModalOpen(false)}
-                onConfirm={handleconfirm}
-                title='Error '
+                onClose={() => setIsConfirmationModalOpen(false)}
+                onConfirm={handleConfirm}
+                title="Error"
                 message={modalMessage}
-                confirmText='OK'
+                confirmText="OK"
                 showCancelButton={false}
-                />
+            />
         </>
     );
 };

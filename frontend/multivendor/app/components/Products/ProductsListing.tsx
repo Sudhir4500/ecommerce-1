@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import apiService from "@/app/services/apiservice";
 import Addproducts from "../modals/Addproducts";
+import { useLoading } from "@/app/context/Loadingcontext"; // Import the useLoading hook
 
 export type ProductType = {
   id: string;
@@ -16,10 +17,11 @@ export type ProductType = {
 const ProductsListing = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { loading, setLoading } = useLoading(); // Use the global loading state
   const router = useRouter();
 
   const fetchProducts = useCallback(async () => {
+    setLoading(true); // Start loading
     try {
       const response = await apiService.getwithouttoken("/api/products/products");
       setProducts(response);
@@ -27,9 +29,9 @@ const ProductsListing = () => {
       console.error("Error fetching products:", err);
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     fetchProducts();

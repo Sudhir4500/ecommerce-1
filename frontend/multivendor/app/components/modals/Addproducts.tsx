@@ -7,6 +7,7 @@ import Modal from "./Modal";
 import apiService from "@/app/services/apiservice";
 import Custombutton from "../forms/Custombutton";
 import ConfirmationModal from "../forms/ConfirmationModal";
+// import { useLoading } from "@/app/context/Loadingcontext";
 
 export type CategoryType = {
   id: string;
@@ -26,6 +27,7 @@ const Addproducts = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  // const { loading, setLoading } = useLoading(); // Use the global loading state
 
   const productlisting = usepropertylistingModal();
   const router = useRouter();

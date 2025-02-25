@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import apiService from '@/app/services/apiservice';
 import { useRouter } from 'next/navigation';
 import AddressFetch from '../components/Address/AddressFetch';
+import { useLoading } from '@/app/context/Loadingcontext'; // Import the useLoading hook
 
 interface CartItem {
     id: string;
@@ -35,14 +36,15 @@ const ReviewOrder = () => {
     const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress[]>([]);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const { loading, setLoading } = useLoading();
+    const { loading, setLoading } = useLoading();
 
     const Router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true);
+                setLoading(true);
                 const cartResponse = await apiService.get('/api/cart/cart/');
                 
                 console.log('Cart Response:', cartResponse.data);
@@ -61,7 +63,7 @@ const ReviewOrder = () => {
             } catch (err: any) {
                 setError(err.message || 'Failed to fetch data.');
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
 
@@ -84,7 +86,7 @@ const ReviewOrder = () => {
         }
     };
 
-    if (isLoading) {
+    if (loading) {
         return <p>Loading...</p>;
     }
 

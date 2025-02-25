@@ -4,12 +4,14 @@ import apiService from "@/app/services/apiservice";
 import BecomeVendorButton from "../Navbar/BecomeVendorButton";
 import AddpropertyButton from "../Navbar/AddpropertyButton";
 import VendorProductButton from "../vendorproduct/vendorproductbtn";
+// import { useLoading } from "@/app/context/Loadingcontext";
 
 
 const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ email, className }) => {
   const [isVendor, setIsVendor] = useState<boolean | null>(null); // State to track if the user is a vendor
   const [error, setError] = useState<string | null>(null); // Error handling
   const [loading, setLoading] = useState<boolean>(true); // Loading state
+  // const {loading, setLoading}=useLoading()
  
 
   // Check if the user is a vendor when email changes or on page reload

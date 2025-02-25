@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import apiService from "@/app/services/apiservice";
 import ConfirmationModal from "@/app/components/forms/ConfirmationModal";// Import the modal
+import { useLoading } from "@/app/context/Loadingcontext";
 
 export type ProductType = {
   id: string;
@@ -17,8 +18,9 @@ export type ProductType = {
 
 const VendorProductDetail = () => {
   const [product, setProduct] = useState<ProductType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { loading, setLoading } = useLoading(); 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     Product_name: "",
@@ -32,6 +34,7 @@ const VendorProductDetail = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);//start loading
       try {
         const response = await apiService.get(`/api/products/products/${id}`);
         setProduct(response);

@@ -10,6 +10,7 @@ import AuthInitializer from "./components/AuthInitializer";
 import Footer from "./components/Footer";
 import Addproducts from "./components/modals/Addproducts";
 import { Suspense } from "react";
+import { LoadingProvider } from "./context/Loadingcontext";
 
 
 
@@ -47,8 +48,9 @@ export default function RootLayout({
 
           <AuthInitializer />
           
-
+<LoadingProvider>
         {children}
+        </LoadingProvider>  
          
         <Addproducts />
       <LoginModal />
