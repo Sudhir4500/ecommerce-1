@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import apiService from '@/app/services/apiservice';
+import useCartModal from '@/app/hooks/usecartmodal';
+import ConfirmationModal from '@/app/components/forms/ConfirmationModal';
 import { useLoading } from '@/app/context/Loadingcontext'; // Import the useLoading hook
-import LoadingBar from '@/app/components/loading/Loading'; // Import the loading bar component
+import LoadingBar from '@/app/components/loading/Loading';
 
 export type ProductType = {
     id: string;
@@ -20,7 +22,16 @@ const ProductDetail = () => {
     const { id } = useParams(); // Get the product ID from the URL
     const [product, setProduct] = useState<ProductType | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState<number>(1); // For quantity input
     const { loading, setLoading } = useLoading(); // To manage loading state
+    // const [loading, setLoading] = useState<boolean>(true);
+    const cartModal = useCartModal(); // To manage cart modal
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+
+    const handleConfirm = () => {
+        setIsConfirmationModalOpen(false);
+    };
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -41,6 +52,29 @@ const ProductDetail = () => {
         }
     }, [id, setLoading]);
 
+    const handleAddToCart = async () => {
+        if (!product) return;
+        setLoading(true); // Start loading
+
+        try {
+            // Make an API call to add the product to the cart
+            await apiService.post('/api/cart/cart/', {
+                product: product.id,
+                quantity,
+                price: product.price,
+            });
+
+            // Open the cart modal on success
+            // cartModal.open();
+        } catch (err) {
+            console.error('Failed to add product to cart:', err);
+            setModalMessage("Failed to add product to cart!! Please login");
+            setIsConfirmationModalOpen(true);
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
+
     if (error) {
         return <div className="text-red-500">{error}</div>;
     }
@@ -51,8 +85,8 @@ const ProductDetail = () => {
 
     return (
         <>
-            {loading && <LoadingBar />} {/* Show loading bar when loading */}
-            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
+           {loading &&<LoadingBar />}
+           <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
                 <div>
                     <img
                         src={product.image}
@@ -68,9 +102,37 @@ const ProductDetail = () => {
                         <span className="text-violet-500 font-extrabold break-words">Description:</span>
                         {product.description}
                     </p>
+                    <p className="text-gray-700 mt-4">
+                        Quantity:{' '}
+                        <input
+                            type="number"
+                            min={1}
+                            value={quantity}
+                            onChange={(e) => setQuantity(Number(e.target.value))}
+                            className="border border-gray-300 rounded px-2 py-1"
+                        />
+                    </p>
                     <p className="text-blue-600 mt-4">Vendor: {product.vendor_name}</p>
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={loading}
+                        className={`bg-blue-500 text-white px-4 py-2 mt-4 rounded ${
+                            loading ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                    >
+                        {loading ? 'Adding...' : 'Add to Cart'}
+                    </button>
                 </div>
             </div>
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                onClose={() => setIsConfirmationModalOpen(false)}
+                onConfirm={handleConfirm}
+                title="Error"
+                message={modalMessage}
+                confirmText="OK"
+                showCancelButton={false}
+            />
         </>
     );
 };
