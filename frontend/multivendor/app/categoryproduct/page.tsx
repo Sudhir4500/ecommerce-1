@@ -1,8 +1,10 @@
 'use client';
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation"; 
-import apiService from "@/app/services/apiservice";
 
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import apiService from "@/app/services/apiservice";
+import { useLoading } from "@/app/context/Loadingcontext"; // Import the useLoading hook
+import SkeletonProductCard from "../components/loading/Skeleton";// Import the skeleton component
 
 export type ProductType = {
   id: string;
@@ -17,10 +19,12 @@ const CategoryProductPage = () => {
   const category = searchParams.get('search') || ''; // Get category from URL
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { loading, setLoading } = useLoading(); // Use the global loading state
   const router = useRouter(); // Initialize useRouter to navigate to the product detail page
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await apiService.getwithouttoken('/api/products/products/');
         console.log('API Response:', response); // Debugging: Check what API returns
@@ -35,11 +39,13 @@ const CategoryProductPage = () => {
       } catch (err: any) {
         console.error("Error fetching products:", err);
         setError(err.message);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchProducts();
-  }, [category]); // Runs when category changes
+  }, [category, setLoading]); // Runs when category changes
 
   const handleProductClick = (productId: string) => {
     router.push(`/products/${productId}`); // Navigate to product detail page
@@ -55,7 +61,13 @@ const CategoryProductPage = () => {
         <div className="text-red-500">Failed to load products: {error}</div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.length > 0 ? (
+          {loading ? (
+            // Show skeleton loading while data is being fetched
+            Array.from({ length: 3 }).map((_, index) => (
+              <SkeletonProductCard key={`skeleton-${index}`} />
+            ))
+          ) : products.length > 0 ? (
+            // Show actual products once data is loaded
             products.map((product) => (
               <div 
                 key={product.id} 
@@ -72,6 +84,7 @@ const CategoryProductPage = () => {
               </div>
             ))
           ) : (
+            // Show "No products found" message if there are no products
             <div className="text-gray-500 col-span-full text-center">
               No products found for this category.
             </div>

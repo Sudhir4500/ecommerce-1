@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import apiService from "@/app/services/apiservice";
-import Addproducts from "../modals/Addproducts";
-import { useLoading } from "@/app/context/Loadingcontext"; // Import the useLoading hook
+import { useLoading } from "@/app/context/Loadingcontext";
+import SkeletonProductCard from "../loading/Skeleton";// Import the skeleton component
 
 export type ProductType = {
   id: string;
@@ -14,7 +14,7 @@ export type ProductType = {
   image: string;
 };
 
-const ProductsListing = () => {
+const ProductListing = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { loading, setLoading } = useLoading(); // Use the global loading state
@@ -41,32 +41,38 @@ const ProductsListing = () => {
     router.push(`/products/${id}`);
   };
 
-  if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-500">Failed to load products: {error}</div>;
 
   return (
     <div className="cursor-pointer">
-      <Addproducts />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="border border-gray-300 rounded-xl p-4 cursor-pointer"
-            onClick={() => handleProductClick(product.id)}
-          >
-            <img
-              src={product.image}
-              alt={product.Product_name}
-              className="w-[250px] h-[250px] object-cover"
-            />
-            <div className="text-center">{product.Product_name}</div>
-            <div className="text-center">Price: Rs {product.price}</div>
-            <div className="text-center">Category: {product.category_name}</div>
-          </div>
-        ))}
+        {loading ? (
+          // Show skeleton loading while data is being fetched
+          Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonProductCard key={`skeleton-${index}`} />
+          ))
+        ) : (
+          // Show actual product cards once data is loaded
+          products.map((product) => (
+            <div
+              key={product.id}
+              className="border border-gray-300 rounded-xl p-4 cursor-pointer"
+              onClick={() => handleProductClick(product.id)}
+            >
+              <img
+                src={product.image}
+                alt={product.Product_name}
+                className="w-[250px] h-[250px] object-cover"
+              />
+              <div className="text-center">{product.Product_name}</div>
+              <div className="text-center">Price: Rs {product.price}</div>
+              <div className="text-center">Category: {product.category_name}</div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
 };
 
-export default ProductsListing;
+export default ProductListing;
