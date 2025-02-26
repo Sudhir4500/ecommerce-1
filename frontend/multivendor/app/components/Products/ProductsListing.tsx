@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import apiService from "@/app/services/apiservice";
 import { useLoading } from "@/app/context/Loadingcontext";
-import SkeletonProductCard from "../loading/Skeleton";// Import the skeleton component
+import SkeletonProductCard from "../loading/Skeleton"; // Import the skeleton component
+import LoadingBar from "../loading/Loading"; // Import the loading bar component
 
 export type ProductType = {
   id: string;
@@ -18,10 +19,11 @@ const ProductListing = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { loading, setLoading } = useLoading(); // Use the global loading state
+  const [isNavigating, setIsNavigating] = useState(false); // Local state for navigation loading
   const router = useRouter();
 
   const fetchProducts = useCallback(async () => {
-    setLoading(true); // Start loading
+    setLoading(true); // Start loading for initial fetch
     try {
       const response = await apiService.getwithouttoken("/api/products/products");
       setProducts(response);
@@ -29,7 +31,7 @@ const ProductListing = () => {
       console.error("Error fetching products:", err);
       setError(err.message);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); // Stop loading for initial fetch
     }
   }, [setLoading]);
 
@@ -38,6 +40,8 @@ const ProductListing = () => {
   }, [fetchProducts]);
 
   const handleProductClick = (id: string) => {
+    setIsNavigating(true); // Trigger navigation loading state
+    setLoading(true); // Trigger global loading state for loading bar
     router.push(`/products/${id}`);
   };
 
@@ -45,9 +49,10 @@ const ProductListing = () => {
 
   return (
     <div className="cursor-pointer">
+      {isNavigating && <LoadingBar />} {/* Show loading bar during navigation */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {loading ? (
-          // Show skeleton loading while data is being fetched
+          // Show skeleton loading while data is being fetched (initial load)
           Array.from({ length: 8 }).map((_, index) => (
             <SkeletonProductCard key={`skeleton-${index}`} />
           ))
