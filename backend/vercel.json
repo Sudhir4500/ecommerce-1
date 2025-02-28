@@ -7,29 +7,16 @@
         "config": { "maxLambdaSize": "15mb", "runtime": "python3" }
       }
     ],
-    "rewrites": [
+    "routes": [
       {
-        "source": "/(.*)",
-        "destination": "/core/wsgi.py"
+        "src": "/(.*)",
+        "dest": "core/wsgi.py"
       }
     ],
-    "headers": [
-      {
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"  
-          },
-          {
-            "key": "Access-Control-Allow-Methods",
-            "value": "GET, POST, PUT, DELETE, OPTIONS"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "Content-Type, Authorization"
-          }
-        ]
-      }
-    ]
+    "env": {
+      "DJANGO_SETTINGS_MODULE": "core.settings",
+      "SECRET_KEY": "your-secret-key",
+      "DEBUG": "False",
+      "ALLOWED_HOSTS": ".vercel.app"
+    }
   }
