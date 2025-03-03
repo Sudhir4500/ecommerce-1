@@ -43,7 +43,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ category, setcategories
   }
 
   return (
-    <div className="flex space-x-2 cursor-pointer">
+    <div className="flex overflow-x-auto whitespace-nowrap space-x-2 cursor-pointer scrollbar-hide">
       {categories.length > 0 ? (
         categories.map((cat) => (
           <div

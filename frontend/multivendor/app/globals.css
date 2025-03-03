@@ -43,3 +43,13 @@
     width: 100% !important;
     transition: width 0.3s ease;
   }
+
+/* hide scroll bar  */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+  }
