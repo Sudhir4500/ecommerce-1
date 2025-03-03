@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect,useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Modal from "../modals/Modal";
 import usecartModal from "@/app/hooks/usecartmodal";
 import useAuthStore from "@/app/hooks/isloggedin";
@@ -8,7 +8,6 @@ import apiService from "@/app/services/apiservice";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import { useRouter } from "next/navigation";
 import ConfirmationModal from "../forms/ConfirmationModal";
-
 
 interface CartItem {
   id: string;
@@ -25,6 +24,7 @@ const Cartmodal = () => {
   const { isLoggedIn } = useAuthStore();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const router = useRouter();
 
   const fetchCartData = useCallback(async () => {
@@ -32,7 +32,7 @@ const Cartmodal = () => {
       const response = await apiService.get("/api/cart/cart/");
       const cartItems = Array.isArray(response) ? response : response.data || [];
       setCartItems(cartItems);
-      const total = cartItems.reduce((sum: any, item: { total_price: any; }) => sum + item.total_price, 0);
+      const total = cartItems.reduce((sum: any, item: { total_price: any }) => sum + item.total_price, 0);
       setTotalAmount(total);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -43,34 +43,66 @@ const Cartmodal = () => {
     if (cartmodal.isOpen) {
       const checkAuth = async () => {
         if (!isLoggedIn) {
-          loginModal.open();
-          alert("Please login to view your cart");
-          
-          cartmodal.close();
+          setIsConfirmationModalOpen(true);
         } else {
           fetchCartData();
         }
       };
       checkAuth();
     }
-  }, [cartmodal.isOpen, isLoggedIn, loginModal, cartmodal]);
+  }, [cartmodal.isOpen, isLoggedIn, fetchCartData]);
+
+  const handleConfirmationClose = () => {
+    setIsConfirmationModalOpen(false);
+    cartmodal.close();
+  };
+
+  const handleConfirmationConfirm = () => {
+    setIsConfirmationModalOpen(false);
+    loginModal.open();
+    cartmodal.close();
+  };
+
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     setCartItems((prevCartItems) => {
+  //       const updatedCart = prevCartItems.filter((item) => item.id !== id);
+  //       const total = updatedCart.reduce((sum, item) => sum + item.total_price, 0);
+  //       setTotalAmount(total);
+  //       return updatedCart;
+  //     });
+
+  //     const response = await apiService.delete(`/api/cart/cart/${id}`);
+  //     if (response.status !== 204) {
+  //       fetchCartData();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //     fetchCartData();
+  //   }
+  // };
 
   const handleDelete = async (id: string) => {
     try {
+      // Optimistically update the UI
       setCartItems((prevCartItems) => {
         const updatedCart = prevCartItems.filter((item) => item.id !== id);
         const total = updatedCart.reduce((sum, item) => sum + item.total_price, 0);
         setTotalAmount(total);
         return updatedCart;
       });
-
+  
+      // Perform the delete API call
       const response = await apiService.delete(`/api/cart/cart/${id}`);
-      if (response.status !== 204) {
-        fetchCartData();
+  
+      // Check if response exists and has a status property
+      if (response && response.status && response.status !== 204) {
+        console.warn("Unexpected status code:", response.status);
+        fetchCartData(); // Re-fetch cart data to ensure UI consistency
       }
     } catch (error) {
       console.error("Error deleting item:", error);
-      fetchCartData();
+      fetchCartData(); // Revert to server state in case of failure
     }
   };
 
@@ -90,7 +122,7 @@ const Cartmodal = () => {
       await apiService.patch(`/api/cart/cart/${id}/`, { quantity: updatedItem.quantity });
     } catch (error) {
       console.error("Error increasing quantity:", error);
-      fetchCartData(); // Revert to the correct state if the API fails
+      fetchCartData();
     }
   };
 
@@ -110,10 +142,9 @@ const Cartmodal = () => {
       await apiService.patch(`/api/cart/cart/${id}/`, { quantity: updatedItem.quantity });
     } catch (error) {
       console.error("Error decreasing quantity:", error);
-      fetchCartData(); // Revert to the correct state if the API fails
+      fetchCartData();
     }
   };
-  
 
   const handleCheckout = () => {
     router.push("/Delivery");
@@ -187,8 +218,22 @@ const Cartmodal = () => {
 
   return (
     <div>
-      <Modal isOpen={cartmodal.isOpen} close={cartmodal.close} label="Your Cart" content={content} />
-     
+      {/* Conditionally render the Modal based on isConfirmationModalOpen */}
+      <Modal
+        isOpen={cartmodal.isOpen && !isConfirmationModalOpen} // Only show Modal if ConfirmationModal is not open
+        close={cartmodal.close}
+        label="Your Cart"
+        content={content}
+      />
+      <ConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        onClose={handleConfirmationClose}
+        onConfirm={handleConfirmationConfirm}
+        title="Authentication Required"
+        message="Please login to view your cart"
+        confirmText="OK"
+        cancelText="Cancel"
+      />
     </div>
   );
 };

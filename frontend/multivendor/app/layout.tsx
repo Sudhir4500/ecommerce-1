@@ -12,9 +12,6 @@ import Addproducts from "./components/modals/Addproducts";
 import { Suspense } from "react";
 import { LoadingProvider } from "./context/Loadingcontext";
 
-
-
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,29 +34,26 @@ export default function RootLayout({
 }>) {
   return (
     <Suspense>
-    <html lang="en">
-     
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar />
-        <div className=" pt-24">
-          <CategoriesList />
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <Navbar />
+          <div className=" pt-24">
+            <CategoriesList />
 
-          <AuthInitializer />
-          
-<LoadingProvider>
-        {children}
-        </LoadingProvider>  
-         
-        <Addproducts />
-      <LoginModal />
-      <SignupModal />
-      <Vendormodal />
-      <Footer />
-        </div>
-      </body>
-    </html>
+            <AuthInitializer />
+
+            <LoadingProvider>{children}</LoadingProvider>
+
+            <Addproducts />
+            <LoginModal />
+            <SignupModal />
+            <Vendormodal />
+            <Footer />
+          </div>
+        </body>
+      </html>
     </Suspense>
   );
 }

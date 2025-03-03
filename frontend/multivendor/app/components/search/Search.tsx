@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 
+
 const Search = () => {
     const router = useRouter();
+    
 
     const handlesearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
