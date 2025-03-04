@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // Import Next.js Link component
 import apiService from "@/app/services/apiservice";
 import { useLoading } from "@/app/context/Loadingcontext";
-import SkeletonProductCard from "../loading/Skeleton"; // Import the skeleton component
-import LoadingBar from "../loading/Loading"; // Import the loading bar component
+import SkeletonProductCard from "../loading/Skeleton";
+import LoadingBar from "../loading/Loading";
 
 export type ProductType = {
   id: string;
@@ -18,12 +19,12 @@ export type ProductType = {
 const ProductListing = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const { loading, setLoading } = useLoading(); // Use the global loading state
-  const [isNavigating, setIsNavigating] = useState(false); // Local state for navigation loading
+  const { loading, setLoading } = useLoading();
+  const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
 
   const fetchProducts = useCallback(async () => {
-    setLoading(true); // Start loading for initial fetch
+    setLoading(true);
     try {
       const response = await apiService.getwithouttoken("/api/products/products");
       setProducts(response);
@@ -31,7 +32,7 @@ const ProductListing = () => {
       console.error("Error fetching products:", err);
       setError(err.message);
     } finally {
-      setLoading(false); // Stop loading for initial fetch
+      setLoading(false);
     }
   }, [setLoading]);
 
@@ -40,8 +41,8 @@ const ProductListing = () => {
   }, [fetchProducts]);
 
   const handleProductClick = (id: string) => {
-    setIsNavigating(true); // Trigger navigation loading state
-    setLoading(true); // Trigger global loading state for loading bar
+    setIsNavigating(true);
+    setLoading(true);
     router.push(`/products/${id}`);
   };
 
@@ -49,20 +50,22 @@ const ProductListing = () => {
 
   return (
     <div className="cursor-pointer">
-      {isNavigating && <LoadingBar />} {/* Show loading bar during navigation */}
+      {isNavigating && <LoadingBar />}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {loading ? (
-          // Show skeleton loading while data is being fetched (initial load)
           Array.from({ length: 8 }).map((_, index) => (
             <SkeletonProductCard key={`skeleton-${index}`} />
           ))
         ) : (
-          // Show actual product cards once data is loaded
           products.map((product) => (
-            <div
+            <Link
               key={product.id}
-              className="border border-gray-300 rounded-xl p-4 cursor-pointer"
-              onClick={() => handleProductClick(product.id)}
+              href={`/products/${product.id}`}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default navigation
+                handleProductClick(product.id); // Use router.push for controlled navigation
+              }}
+              className="block border border-gray-300 rounded-xl p-4 cursor-pointer"
             >
               <img
                 src={product.image}
@@ -72,7 +75,7 @@ const ProductListing = () => {
               <div className="text-center">{product.Product_name}</div>
               <div className="text-center">Price: Rs {product.price}</div>
               <div className="text-center">Category: {product.category_name}</div>
-            </div>
+            </Link>
           ))
         )}
       </div>
