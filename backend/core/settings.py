@@ -15,6 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 import dj_database_url
+import cloudinary 
 
 load_dotenv()
 
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     
-
+    
   
 
     'useraccounts',
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     'vendormanagement',
    'cart',
    'delivery_address',
+
   
 ]
 
@@ -203,3 +205,8 @@ SIMPLE_JWT = {
     "SIGNING_KEY": "acomplexkey",
     "ALOGRIGTHM": "HS512",
 }
+# for cloudinary image upload
+cloudinary.config( 
+  secure = True
+)
+

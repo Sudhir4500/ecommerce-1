@@ -3,6 +3,7 @@ from cloudinary.models import CloudinaryField
 import uuid
 
 
+
 class category(models.Model):
   category_name = models.CharField(max_length=50)
 
@@ -26,3 +27,4 @@ class product(models.Model):
 
     def __str__(self):
         return self.Product_name
+    
