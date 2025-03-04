@@ -95,7 +95,7 @@ const ProductDetail = () => {
                     />
                 </div>
                 <div className="mt-10 ml-10">
-                    <h1 className="text-xl font-bold">{product.Product_name}</h1>
+                    <h1 className="text-xl font-bold break-words">{product.Product_name}</h1>
                     <p className="text-gray-700 mt-3">Price: Rs {product.price}</p>
                     <p className="text-gray-700 mt-4">Category: {product.category_name}</p>
                     <p className="text-gray-700 mt-4 flex flex-col">
