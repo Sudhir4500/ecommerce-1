@@ -59,7 +59,7 @@ const ProductDetail = () => {
                 quantity: quantity, // Send custom quantity
             });
             console.log("Add to cart response:", response);
-            cartModal.open(); // Open cart modal on success
+            // cartModal.open(); // Open cart modal on success
         } catch (err: any) {
             console.error("Failed to add product to cart:", err);
             if (err.status === 401) {
