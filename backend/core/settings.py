@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 
 # for authentication
     'social_django',
@@ -244,6 +245,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
+
+SOCIAL_AUTH_REDIRECT_URI = 'https://ecommerce-1-dj4t.onrender.com/auth/complete/google-oauth2/'
 
 
 

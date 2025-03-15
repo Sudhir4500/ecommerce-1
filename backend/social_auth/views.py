@@ -54,3 +54,5 @@ class GoogleLoginView(generics.GenericAPIView):
         except Exception as e:
             logger.error(f"Google OAuth error: {str(e)}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
