@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-oeh&*-f4be5@^+)xxbu&vv&=@8e1u0vzb()r*o+he)q3hi+0uq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =os.environ.get('DEBUG')
+DEBUG =os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -228,8 +228,8 @@ AUTHENTICATION_BACKENDS = (
 
 # Google OAuth2
 # client id and secret
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
 
 
 # Optional: Pipeline for user creation

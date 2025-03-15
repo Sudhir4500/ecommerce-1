@@ -21,7 +21,6 @@ class GoogleLoginView(generics.GenericAPIView):
         if not token:
             return Response({'error': 'No token provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # client_id = '397422616396-sh5e85nprggh6l2k5vv3qgjbburcqe24.apps.googleusercontent.com'
         client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
         try:
             # Verify the ID token
