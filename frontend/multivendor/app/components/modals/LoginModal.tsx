@@ -62,6 +62,7 @@ const LoginModal = () => {
     }
   };
 
+
   const handleGoogleLoginSuccess = (credentialResponse: CredentialResponse) => {
     (async () => {
       setIsLoading(true);
@@ -162,7 +163,8 @@ const LoginModal = () => {
   );
 
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+    // <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+    <GoogleOAuthProvider clientId="109149566115-a1i94m34f7th1fofmpio8ful8cl20s04.apps.googleusercontent.com">
       <Modal
         isOpen={loginmodal.isOpen}
         close={loginmodal.close}
