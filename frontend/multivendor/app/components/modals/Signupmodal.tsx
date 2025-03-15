@@ -170,7 +170,7 @@ const SignupModal = () => {
   );
 
   return (
-    <GoogleOAuthProvider clientId="397422616396-sh5e85nprggh6l2k5vv3qgjbburcqe24.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
       <Modal
         isOpen={signupModal.isOpen}
         close={signupModal.close}
