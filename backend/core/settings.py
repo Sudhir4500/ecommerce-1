@@ -249,7 +249,7 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 
-SOCIAL_AUTH_REDIRECT_URI = 'https://ecommerce-1-dj4t.onrender.com/auth/complete/google-oauth2/'
+# SOCIAL_AUTH_REDIRECT_URI = 'https://ecommerce-1-dj4t.onrender.com/auth/complete/google-oauth2/'
 
 
 
