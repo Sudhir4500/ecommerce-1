@@ -1,5 +1,3 @@
-from django.http import JsonResponse
-import os
 
 from django.shortcuts import render
 from .models import User
