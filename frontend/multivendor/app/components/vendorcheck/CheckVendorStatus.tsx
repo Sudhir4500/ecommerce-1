@@ -4,33 +4,25 @@ import apiService from "@/app/services/apiservice";
 import BecomeVendorButton from "../Navbar/BecomeVendorButton";
 import AddpropertyButton from "../Navbar/AddpropertyButton";
 import VendorProductButton from "../vendorproduct/vendorproductbtn";
-// import { useLoading } from "@/app/context/Loadingcontext";
-
 
 const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ email, className }) => {
-  const [isVendor, setIsVendor] = useState<boolean | null>(null); // State to track if the user is a vendor
-  const [error, setError] = useState<string | null>(null); // Error handling
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  // const {loading, setLoading}=useLoading()
- 
+  const [isVendor, setIsVendor] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Check if the user is a vendor when email changes or on page reload
   useEffect(() => {
     if (!email) {
-      setLoading(false); // Stop loading
-      setIsVendor(false); // Assume user is not a vendor if not logged in
+      setLoading(false);
+      setIsVendor(false);
       return;
     }
 
-    // Clear sessionStorage on page reload to force an API call
     const handlePageReload = () => {
       sessionStorage.removeItem(`vendorStatus-${email}`);
     };
 
-    // Add event listener for page reload
     window.addEventListener("beforeunload", handlePageReload);
 
-    // Check if vendor status is already stored in sessionStorage (for the current session)
     const sessionVendorStatus = sessionStorage.getItem(`vendorStatus-${email}`);
     if (sessionVendorStatus !== null) {
       setIsVendor(sessionVendorStatus === "true");
@@ -38,48 +30,46 @@ const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ e
       return;
     }
 
-    // If no cached data in sessionStorage, fetch from the API
     const checkVendorStatus = async () => {
-      setError(null); // Reset error state
-
+      setError(null);
       try {
-        // Fetch vendor profile
-        const vendorData = await apiService.get("/api/vendors/my_profile/");
-
-        // Check if the vendor profile exists
-        if (vendorData && vendorData.email) {
-          setIsVendor(true); // User is a vendor
-          sessionStorage.setItem(`vendorStatus-${email}`, "true"); // Store in sessionStorage for the current session
+        const vendorData = await apiService.get("/api/vendors/my_profile/"); // Ensure URL matches backend
+        console.log("Vendor profile response:", vendorData);
+        if (vendorData && (vendorData.email || vendorData.id)) {  // Check email or id
+          setIsVendor(true);
+          sessionStorage.setItem(`vendorStatus-${email}`, "true");
         } else {
-          setIsVendor(false); // User is not a vendor
-          sessionStorage.setItem(`vendorStatus-${email}`, "false"); // Store in sessionStorage for the current session
+          setIsVendor(false);
+          sessionStorage.setItem(`vendorStatus-${email}`, "false");
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error checking vendor status:", err);
-        setError("Failed to check vendor status. Please try again later.");
-        setIsVendor(false); // Assume user is not a vendor in case of error
+        if (err.message.includes("404")) {
+          setIsVendor(false);
+          sessionStorage.setItem(`vendorStatus-${email}`, "false");
+        } else {
+          setError("Failed to check vendor status. Please try again later.");
+          setIsVendor(false);
+        }
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
-    checkVendorStatus(); // Run the vendor check when email changes or on page reload
+    checkVendorStatus();
 
-    // Cleanup event listener
     return () => {
       window.removeEventListener("beforeunload", handlePageReload);
     };
-  }, [email]); // Re-run when email changes
+  }, [email]);
 
-  // Return error state or the actual content
-  if (loading) return <div> </div>; // Show loading state
-  if (error) return <div>{error}</div>; // Show error if API call fails
+  if (loading) return <div> </div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className={className}>
       {isVendor ? (
         <>
-        {/* for lg devices */}
           <div className="cursor-pointer flex gap-4">
             <AddpropertyButton
               userId={email}
@@ -87,21 +77,17 @@ const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ e
               className="flex items-center justify-center p-2 text-[12px] font-semibold text-white lg:bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200 max-md:hidden"
             />
             <VendorProductButton
-          
-            className="flex items-center justify-center p-2 text-[12px] font-semibold text-white lg:bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200 max-md:hidden"
-            
+              className="flex items-center justify-center p-2 text-[12px] font-semibold text-white lg:bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200 max-md:hidden"
             />
           </div>
           <div className="cursor-pointer lg:hidden">
             <AddpropertyButton
               userId={email}
               id={email}
-              className="px-5 py-4 cursor-pointer  hover:bg-blue-500 rounded-lg "
+              className="px-5 py-4 cursor-pointer hover:bg-blue-500 rounded-lg"
             />
             <VendorProductButton
-            
-            className="px-5 py-4 cursor-pointer hover:bg-blue-500 rounded-lg"
-
+              className="px-5 py-4 cursor-pointer hover:bg-blue-500 rounded-lg"
             />
           </div>
         </>
@@ -112,7 +98,6 @@ const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ e
               userId={email}
               isVendor={isVendor ?? undefined}
               className="flex items-center justify-center p-2 text-[12px] font-semibold text-white lg:bg-blue-500 rounded-full w-[90px] h-[50px] hover:bg-blue-600 transition-colors duration-200 max-md:hidden"
-
             />
           </div>
           <div className="cursor-pointer lg:hidden">

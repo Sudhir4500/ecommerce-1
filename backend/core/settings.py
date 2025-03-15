@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+# for authentication
+    'social_django',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
@@ -57,6 +60,7 @@ INSTALLED_APPS = [
     'vendormanagement',
    'cart',
    'delivery_address',
+   'social_auth',
 
   
 ]
@@ -209,4 +213,37 @@ SIMPLE_JWT = {
 cloudinary.config( 
   secure = True
 )
+
+# Redirect URL
+LOGIN_URL = '/api/auth/login/'  # Where unauthenticated users are redirected
+LOGIN_REDIRECT_URL = '/'        # Where users go after login
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'  # Specific to social auth
+SOCIAL_AUTH_URL_NAMESPACE = 'social'  # Matches your root urls.py
+
+# social auth
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Google OAuth2
+# client id and secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+# Optional: Pipeline for user creation
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+
 

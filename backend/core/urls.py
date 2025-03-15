@@ -10,6 +10,8 @@ urlpatterns = [
     path('api/', include('vendormanagement.urls')),  # Ensure trailing slash for consistency
     path('api/cart/', include('cart.urls')),  # Ensure trailing slash for consistency
     path('api/', include('delivery_address.urls')),  # Ensure trailing slash for consistency
+
+   path('', include('social_django.urls', namespace='social')),  # Ensure this is present
 ]
 
 

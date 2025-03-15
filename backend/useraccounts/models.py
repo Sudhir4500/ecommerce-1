@@ -18,8 +18,8 @@ class User(AbstractUser):
     
 class profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = CloudinaryField('image')
-    full_name = models.CharField(max_length=100)
+    image = CloudinaryField('image' , blank=True, null=True)
+    full_name = models.CharField(max_length=100 , blank=True, null=True)
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

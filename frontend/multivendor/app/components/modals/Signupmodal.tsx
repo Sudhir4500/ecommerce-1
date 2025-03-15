@@ -7,129 +7,177 @@ import Custombutton from "../forms/Custombutton";
 import apiService from "@/app/services/apiservice";
 import useAuthStore from "@/app/hooks/isloggedin";
 import Modal from "./Modal";
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { handleLogin } from "@/app/lib/actions";
+
+interface FormErrors {
+  general?: string;
+  email?: string;
+  username?: string;
+  password1?: string;
+  password2?: string;
+  [key: string]: string | undefined;
+}
 
 const SignupModal = () => {
   const router = useRouter();
   const signupModal = useSignupModal();
   const { setLoggedIn } = useAuthStore();
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Object to store field-specific errors
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password1, setPassword1] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const submitSignup = async () => {
-    setIsLoading(true); // Set loading state to true
-    const formData = {
-      email: email,
-      username: username,
-      password: password1,
-      password2: password2,
-    };
+  const submitSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrors({});
+
+    const formData = { email, username, password: password1, password2 };
 
     try {
-      const response = await apiService.postWithoutToken("/api/auth/register/", JSON.stringify(formData));
-      console.log("api response", response);
+      const response = await apiService.postWithoutToken("/api/auth/register/", formData);
+      console.log("API response:", response);
 
       if (response.id) {
-        // Trigger login after successful signup
         setLoggedIn(true, email);
-
-        // Close the signup modal and redirect
         signupModal.close();
         router.push("/");
       } else {
-        // Handle registration errors
-        const tmpErrors: { [key: string]: string } = {};
+        const tmpErrors: FormErrors = {};
         for (const key in response) {
           if (Array.isArray(response[key])) {
-            tmpErrors[key] = response[key][0]; // Take the first error message for each field
+            tmpErrors[key] = response[key][0];
           }
         }
         setErrors(tmpErrors);
       }
-    } catch (error) {
+    } catch (error: any) {
+      setErrors({ general: error.message || "An error occurred during registration." });
       console.error("Registration error:", error);
-      setErrors({ general: "An error occurred during registration. Please try again." });
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
+  };
+
+  const handleGoogleSignupSuccess = (credentialResponse: CredentialResponse) => {
+    (async () => {
+      setIsLoading(true);
+      setErrors({});
+      const token = credentialResponse.credential;
+      console.log("Google token:", token); // Log the token
+      if (!token) {
+        setErrors({ general: "No Google token received." });
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const response = await apiService.postWithoutToken("/api/auth/social/google-login/", {
+          access_token: token,
+        });
+        console.log("Google signup response:", response);
+        if (response.token && response.token.access) {
+          handleLogin(response.user.id, response.token.access, response.token.refresh);
+          setLoggedIn(true, response.user.email);
+          signupModal.close();
+          router.push("/");
+        } else {
+          setErrors({ general: "Google signup failed." });
+        }
+      } catch (error: any) {
+        setErrors({ general: error.message || "An error occurred with Google signup." });
+        console.error("Google signup error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  };
+
+  const handleGoogleSignupError = () => {
+    setErrors({ general: "Google signup failed." });
+    console.log("Google Signup Failed");
   };
 
   const content = (
     <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submitSignup();
-        }}
-        className="space-y-4"
-      >
+      <form onSubmit={submitSignup} className="space-y-4">
         <input
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={errors.email || "Your e-mail address"} // Show error as placeholder
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          placeholder={errors.email || "Your e-mail address"}
           type="email"
           className={`w-full h-[54px] px-4 border ${
             errors.email ? "border-red-500" : "border-gray-300"
           } rounded-xl`}
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
         />
-
         <input
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder={errors.username || "Your username"} // Show error as placeholder
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+          placeholder={errors.username || "Your username"}
           type="text"
           className={`w-full h-[54px] px-4 border ${
             errors.username ? "border-red-500" : "border-gray-300"
           } rounded-xl`}
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
         />
-
         <input
-          onChange={(e) => setPassword1(e.target.value)}
-          placeholder={errors.password1 || "Your password"} // Show error as placeholder
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
+          placeholder={errors.password1 || "Your password"}
           type="password"
           className={`w-full h-[54px] px-4 border ${
             errors.password1 ? "border-red-500" : "border-gray-300"
           } rounded-xl`}
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
         />
-
         <input
-          onChange={(e) => setPassword2(e.target.value)}
-          placeholder={errors.password2 || "Repeat password"} // Show error as placeholder
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
+          placeholder={errors.password2 || "Repeat password"}
           type="password"
           className={`w-full h-[54px] px-4 border ${
             errors.password2 ? "border-red-500" : "border-gray-300"
           } rounded-xl`}
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
         />
-
-        {errors.general && ( // Display general errors (e.g., network errors)
-          <div className="p-5 text-red-800 rounded-xl opacity-80">
-            {errors.general}
-          </div>
+        {errors.general && (
+          <div className="p-5 text-red-800 rounded-xl opacity-80">{errors.general}</div>
         )}
-
         <Custombutton
-          label={isLoading ? "Submitting..." : "Submit"} // Update button label when loading
-          onclick={submitSignup}
-          type="submit" // Make it a submit button
-          disabled={isLoading} // Disable button when loading
-          className={isLoading ? "opacity-50 cursor-not-allowed" : ""} // Add styles for disabled state
+          label={isLoading ? "Submitting..." : "Submit"}
+          type="submit"
+          disabled={isLoading}
+          className={isLoading ? "opacity-50 cursor-not-allowed" : ""}
         />
       </form>
+
+      <div className="flex items-center my-4">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="mx-4 text-gray-500">or</span>
+        <div className="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      <div className="flex justify-center">
+        <GoogleLogin
+          onSuccess={handleGoogleSignupSuccess}
+          onError={handleGoogleSignupError}
+          useOneTap={true}
+          theme="filled_blue"
+          size="large"
+          text="signup_with"
+        />
+      </div>
     </>
   );
 
   return (
-    <Modal
-      isOpen={signupModal.isOpen}
-      close={signupModal.close}
-      label="Sign up"
-      content={content}
-    />
+    <GoogleOAuthProvider clientId="397422616396-sh5e85nprggh6l2k5vv3qgjbburcqe24.apps.googleusercontent.com">
+      <Modal
+        isOpen={signupModal.isOpen}
+        close={signupModal.close}
+        label="Sign up"
+        content={content}
+      />
+    </GoogleOAuthProvider>
   );
 };
 

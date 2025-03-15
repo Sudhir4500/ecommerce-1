@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import apiService from '@/app/services/apiservice';
-import useCartModal from '@/app/hooks/usecartmodal';
-import ConfirmationModal from '@/app/components/forms/ConfirmationModal';
-import { useLoading } from '@/app/context/Loadingcontext'; // Import the useLoading hook
-import LoadingBar from '@/app/components/loading/Loading';
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import apiService from "@/app/services/apiservice";
+import useCartModal from "@/app/hooks/usecartmodal";
+import ConfirmationModal from "@/app/components/forms/ConfirmationModal";
+import { useLoading } from "@/app/context/Loadingcontext";
+import LoadingBar from "@/app/components/loading/Loading";
 
 export type ProductType = {
     id: string;
@@ -19,13 +19,12 @@ export type ProductType = {
 };
 
 const ProductDetail = () => {
-    const { id } = useParams(); // Get the product ID from the URL
+    const { id } = useParams();
     const [product, setProduct] = useState<ProductType | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [quantity, setQuantity] = useState<number>(1); // For quantity input
-    const { loading, setLoading } = useLoading(); // To manage loading state
-    // const [loading, setLoading] = useState<boolean>(true);
-    const cartModal = useCartModal(); // To manage cart modal
+    const [quantity, setQuantity] = useState<number>(1);
+    const { loading, setLoading } = useLoading();
+    const cartModal = useCartModal();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
@@ -35,58 +34,53 @@ const ProductDetail = () => {
 
     useEffect(() => {
         const fetchProduct = async () => {
-            setLoading(true); // Start loading
+            setLoading(true);
             try {
                 const response = await apiService.getwithouttoken(`/api/products/products/${id}/`);
-                setProduct(response); // Set the product data
+                setProduct(response);
             } catch (err: any) {
-                console.error('Error fetching product details:', err);
-                setError('Failed to fetch product details.');
+                console.error("Error fetching product details:", err);
+                setError("Failed to fetch product details.");
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(false);
             }
         };
 
-        if (id) {
-            fetchProduct();
-        }
+        if (id) fetchProduct();
     }, [id, setLoading]);
 
     const handleAddToCart = async () => {
         if (!product) return;
-        setLoading(true); // Start loading
+        setLoading(true);
 
         try {
-            // Make an API call to add the product to the cart
-            await apiService.post('/api/cart/cart/', {
+            const response = await apiService.post("/api/cart/cart/", {
                 product: product.id,
-                quantity,
-                price: product.price,
+                quantity: quantity, // Send custom quantity
             });
-
-            // Open the cart modal on success
-            // cartModal.open();
-        } catch (err) {
-            console.error('Failed to add product to cart:', err);
-            setModalMessage("Failed to add product to cart!! Please login");
-            setIsConfirmationModalOpen(true);
+            console.log("Add to cart response:", response);
+            cartModal.open(); // Open cart modal on success
+        } catch (err: any) {
+            console.error("Failed to add product to cart:", err);
+            if (err.status === 401) {
+                setModalMessage("Please login to add items to your cart.");
+                setIsConfirmationModalOpen(true);
+            } else {
+                setModalMessage("Failed to add product to cart. Please try again.");
+                setIsConfirmationModalOpen(true);
+            }
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
 
-    if (error) {
-        return <div className="text-red-500">{error}</div>;
-    }
-
-    if (!product) {
-        return <div>Loading product details...</div>;
-    }
+    if (error) return <div className="text-red-500">{error}</div>;
+    if (!product) return <div>Loading product details...</div>;
 
     return (
         <>
-           {loading &&<LoadingBar />}
-           <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
+            {loading && <LoadingBar />}
+            <div key={product.id} className="p-4 lg:grid lg:grid-cols-2">
                 <div>
                     <img
                         src={product.image}
@@ -103,7 +97,7 @@ const ProductDetail = () => {
                         {product.description}
                     </p>
                     <p className="text-gray-700 mt-4">
-                        Quantity:{' '}
+                        Quantity:{" "}
                         <input
                             type="number"
                             min={1}
@@ -117,10 +111,10 @@ const ProductDetail = () => {
                         onClick={handleAddToCart}
                         disabled={loading}
                         className={`bg-blue-500 text-white px-4 py-2 mt-4 rounded ${
-                            loading ? 'opacity-50 cursor-not-allowed' : ''
+                            loading ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                     >
-                        {loading ? 'Adding...' : 'Add to Cart'}
+                        {loading ? "Adding..." : "Add to Cart"}
                     </button>
                 </div>
             </div>
