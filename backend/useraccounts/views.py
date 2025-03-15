@@ -92,9 +92,5 @@ def profileView(request):
 #         return Response({"isLoggedIn": False}, status=status.HTTP_200_OK)
 
 
-def debug_env(request):
-    return JsonResponse({
-        'client_id': os.getenv('GOOGLE_OAUTH2_KEY'),
-        'client_secret': os.getenv('GOOGLE_OAUTH2_SECRET'),
-    })
+
 

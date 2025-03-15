@@ -11,5 +11,4 @@ urlpatterns = [
     path('profile/', profileView, name='profile'),
     path('social/google-login/', GoogleLoginView.as_view(), name='google_login'),
 
-    path('debug/', debug_env, name='debug_env'),
 ]
