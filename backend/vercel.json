@@ -4,27 +4,33 @@
       {
         "src": "core/wsgi.py",
         "use": "@vercel/python",
-        "config": {
-          "maxLambdaSize": "15mb",
-          "runtime": "python3.11"
-        }
-      },
-      {
-        "src": "./build_files.sh",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "staticfiles"
-        }
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3" }
       }
     ],
-    "routes": [
+    "rewrites": [
       {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
-      },
+        "source": "/(.*)",
+        "destination": "/core/wsgi.py"
+      }
+    ],
+    "headers": [
       {
-        "src": "/(.*)",
-        "dest": "core/wsgi.py"
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"  
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET, POST, PUT, DELETE, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Authorization"
+          }
+        ]
       }
     ]
   }
+  
