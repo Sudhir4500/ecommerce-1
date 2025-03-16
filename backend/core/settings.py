@@ -150,13 +150,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
-# Point to the static/ directory in the project root (one level up from backend/)
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-# Add this line
+STATIC_URL = '/static/'  # The URL to access static files
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),  # Optional: If you have a local static folder
+# ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Static files (CSS, JavaScript, Images)
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type
