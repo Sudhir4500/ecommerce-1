@@ -153,7 +153,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Point to the static/ directory in the project root (one level up from backend/)
 STATICFILES_DIRS = [os.path.join(BASE_DIR, '..', 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'staticfiles')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'ui', 'staticfiles')
 
 # Static files (CSS, JavaScript, Images)
 

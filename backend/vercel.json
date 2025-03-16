@@ -1,4 +1,3 @@
-
 {
     "version": 2,
     "builds": [
@@ -18,12 +17,11 @@
     "routes": [
       {
         "src": "/static/(.*)",
-        "dest": "/static/$1"
+        "dest": "/ui/staticfiles/$1"  
       },
       {
         "src": "/(.*)",
         "dest": "core/wsgi.py"
       }
-    ],
-    "outputDirectory": "ui/staticfiles"
+    ]
   }

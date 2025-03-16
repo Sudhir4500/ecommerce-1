@@ -1,5 +1,13 @@
 #!/bin/bash
+# Install dependencies
 pip3 install -r requirements.txt
+
+# Run migrations
 python3 backend/manage.py migrate --noinput
+
+# Collect static files
 python3 backend/manage.py collectstatic --noinput
-ls -la staticfiles  # Debug: Should show staticfiles in the project root
+
+# Debug: Check if staticfiles directory exists and contains files
+echo "Checking staticfiles directory..."
+ls -la ui/staticfiles
