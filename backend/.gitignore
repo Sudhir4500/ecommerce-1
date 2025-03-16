@@ -31,3 +31,8 @@ db.sqlite3
 
 # Node.js
 /node_modules/
+
+# Python static files
+/static/
+/staticfiles/
+
