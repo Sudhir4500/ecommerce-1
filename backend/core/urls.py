@@ -12,6 +12,9 @@ urlpatterns = [
     path('api/', include('delivery_address.urls')),  # Ensure trailing slash for consistency
 
    path('', include('social_django.urls', namespace='social')),  # Ensure this is present
+
+
+   path('payments/', include('payment.urls')),
 ]
 
 

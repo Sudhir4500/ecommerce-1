@@ -17,6 +17,8 @@ from datetime import timedelta
 import dj_database_url
 import cloudinary 
 
+from decouple import config
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,8 +55,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     
-    
-  
 
     'useraccounts',
     'products',
@@ -62,6 +62,7 @@ INSTALLED_APPS = [
    'cart',
    'delivery_address',
    'social_auth',
+    'payment'
 
   
 ]
@@ -248,6 +249,14 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
 )
 
+# stripe payment gateway 
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
+
+
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 
 
