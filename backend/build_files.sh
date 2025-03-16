@@ -22,4 +22,4 @@ python3 manage.py migrate
 python3 manage.py collectstatic --noinput
 
 # Start the server
-gunicorn --bind 0.0.0.0:8000 yourproject.wsgi:application
+gunicorn --bind 0.0.0.0:8000 core.wsgi:application
