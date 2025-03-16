@@ -3,6 +3,7 @@
 pip3 install -r requirements.txt
 
 # Run migrations
+python3 manage.py makemigrations
 python3 manage.py migrate --noinput
 
 # Collect static files
