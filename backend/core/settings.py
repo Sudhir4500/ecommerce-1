@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 from datetime import timedelta
 import dj_database_url
 import cloudinary 
-
+import logging
 from decouple import config
 
 load_dotenv()
@@ -259,6 +259,14 @@ SOCIAL_AUTH_PIPELINE = (
 # this is for the stripe payment gateway using decouple 
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+
+
+
+
+logger = logging.getLogger(__name__)
+
+logger.debug(f"STATIC_URL: {STATIC_URL}")
+logger.debug(f"STATIC_ROOT: {STATIC_ROOT}")
 
 
 
