@@ -68,7 +68,7 @@ const LoginModal = () => {
       setIsLoading(true);
       setErrors({});
       const token = credentialResponse.credential;
-      console.log("Google token:", token); // Log the token
+      // console.log("Google token:", token); 
       if (!token) {
         setErrors({ general: "No Google token received." });
         setIsLoading(false);
@@ -78,7 +78,7 @@ const LoginModal = () => {
         const response = await apiService.postWithoutToken("/api/auth/social/google-login/", {
           access_token: token,
         });
-        console.log("Google login response:", response);
+        // console.log("Google login response:", response);
         if (response.token && response.token.access) {
           handleLogin(response.user.id, response.token.access, response.token.refresh);
           setLoggedIn(true, response.user.email);

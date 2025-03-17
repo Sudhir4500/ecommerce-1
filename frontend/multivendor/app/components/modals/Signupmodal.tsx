@@ -77,7 +77,7 @@ const SignupModal = () => {
         const response = await apiService.postWithoutToken("/api/auth/social/google-login/", {
           access_token: token,
         });
-        console.log("Google signup response:", response);
+        // console.log("Google signup response:", response);
         if (response.token && response.token.access) {
           handleLogin(response.user.id, response.token.access, response.token.refresh);
           setLoggedIn(true, response.user.email);

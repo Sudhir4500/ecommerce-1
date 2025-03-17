@@ -207,14 +207,29 @@ REST_AUTH = {
 }
 
 
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+#     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+#     "ROTATE_REFRESH_TOKEN": False,
+#     "BLACKLIST_AFTER_ROTATION": False,
+#     "UPDATE_LAST_LOGIN": True,
+#     "SIGNING_KEY": "acomplexkey",
+#     "ALGORITHM": "HS512",
+# }
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKEN": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": True,
-    "SIGNING_KEY": "acomplexkey",
-    "ALGORITHM": "HS512",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Short-lived access token
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),    # Long-lived refresh token for e-commerce
+    "ROTATE_REFRESH_TOKENS": True,                   # Rotate refresh tokens for security
+    "BLACKLIST_AFTER_ROTATION": True,                # Blacklist old refresh tokens
+    "UPDATE_LAST_LOGIN": True,                       # Track last login
+    "ALGORITHM": "HS512",                            # Strong encryption algorithm
+    "SIGNING_KEY": "e9f8b7c2a1d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7",     # Replace with a secure, unique key
+    "VERIFYING_KEY": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 # for cloudinary image upload
 cloudinary.config( 
