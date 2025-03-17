@@ -266,11 +266,6 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 
 
-logger = logging.getLogger(__name__)
-
-logger.debug(f"STATIC_URL: {STATIC_URL}")
-logger.debug(f"STATIC_ROOT: {STATIC_ROOT}")
-
 
 
 
