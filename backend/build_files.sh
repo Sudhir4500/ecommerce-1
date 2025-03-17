@@ -10,5 +10,5 @@ python3 manage.py migrate
 
 # Collect static files to a directory Vercel can serve
 python3 manage.py collectstatic --noinput --clear
-ls -la staticfiles/
+
 
