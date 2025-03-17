@@ -29,7 +29,6 @@ interface DeliveryAddress {
 
 const ReviewOrder = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress[]>([]);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loadingPayment, setLoadingPayment] = useState(false);
