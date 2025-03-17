@@ -33,8 +33,8 @@ const VendorCheck: React.FC<{ email: string | null; className?: string }> = ({ e
     const checkVendorStatus = async () => {
       setError(null);
       try {
-        const vendorData = await apiService.get("/api/vendors/my_profile/"); // Ensure URL matches backend
-        console.log("Vendor profile response:", vendorData);
+        const vendorData = await apiService.get("/api/vendors/my_profile/"); // Check if user is a vendor
+        // console.log("Vendor profile response:", vendorData);
         if (vendorData && (vendorData.email || vendorData.id)) {  // Check email or id
           setIsVendor(true);
           sessionStorage.setItem(`vendorStatus-${email}`, "true");

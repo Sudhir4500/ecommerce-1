@@ -70,7 +70,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added above
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added here after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -219,12 +219,12 @@ REST_AUTH = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Short-lived access token
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),    # Long-lived refresh token for e-commerce
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),    # Long-lived refresh token for e-commerce
     "ROTATE_REFRESH_TOKENS": True,                   # Rotate refresh tokens for security
     "BLACKLIST_AFTER_ROTATION": True,                # Blacklist old refresh tokens
     "UPDATE_LAST_LOGIN": True,                       # Track last login
     "ALGORITHM": "HS512",                            # Strong encryption algorithm
-    "SIGNING_KEY": "e9f8b7c2a1d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7",     # Replace with a secure, unique key
+    "SIGNING_KEY": "e9f8b7c2a1d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7",     #secure, unique key
     "VERIFYING_KEY": None,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "USER_ID_FIELD": "id",
