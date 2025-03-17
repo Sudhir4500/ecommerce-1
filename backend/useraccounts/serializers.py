@@ -1,12 +1,34 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, profile
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'username']
+
+class ProfileSerializer(serializers.ModelSerializer):  # Added for profile-specific data
+    image = serializers.ImageField(max_length=None, use_url=True, required=False)
+    class Meta:
+        model = profile
+     
+        fields = ['image', 'full_name', 'verified']
+
+    # get image url
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
+
+class UserWithProfileSerializer(serializers.ModelSerializer):  # Optional: combines User and Profile
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'profile']
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

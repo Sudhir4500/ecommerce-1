@@ -17,15 +17,6 @@ interface CartItem {
   total_price: number;
 }
 
-interface DeliveryAddress {
-  full_name: string;
-  address: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  country: string;
-  phone_number: string;
-}
 
 const ReviewOrder = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -252,7 +243,7 @@ const ReviewOrder = () => {
             onChange={(e) => setPaymentMethod(e.target.value)}
             className="mr-2"
           />
-          Stripe
+          Stripe(pay with card)
         </label>
       </div>
 

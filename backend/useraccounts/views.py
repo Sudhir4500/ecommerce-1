@@ -1,7 +1,7 @@
 
 from django.shortcuts import render
 from .models import User
-from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer
+from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -63,19 +63,22 @@ def create(self, request, *args, **kwargs):
 
 
 # check if the user is authenticated to get the profile
-@api_view(['GET','POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def profileView(request):
     if request.method == 'GET':
-        profile = request.user.profile
-        serializer = UserSerializer(profile, many=False)
+        # Use request.user instead of request.user.profile
+        serializer = UserSerializer(request.user, many=False)  # Fix: Serialize User, not Profile
+        # Alternative: Use UserWithProfileSerializer if you want profile data
+        serializer = UserWithProfileSerializer(request.user, many=False)
         return Response(serializer.data)
     else:
-        profile = request.user.profile
-        serializer = UserSerializer(profile, data=request.data)
+        # For POST, update user or profile fields based on request data
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-        return Response(serializer.data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
