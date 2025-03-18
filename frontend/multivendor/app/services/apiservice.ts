@@ -75,25 +75,36 @@ const apiService = {
         });
     },
 
-    postWithoutToken: async function(url: string, data: any): Promise<any> {
-        return new Promise((resolve, reject) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
-                method: 'POST',
-                body: typeof data === 'object' ? JSON.stringify(data) : data,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then((json) => {
-                resolve(json);
-            })
-            .catch((error => {
-                reject(error);
-            }))
+    postWithoutToken: async function (url: string, data: any): Promise<any> {
+        const headers: Record<string, string> = {
+          Accept: "application/json",
+        };
+    
+        // Only set Content-Type to application/json if data is not FormData
+        if (!(data instanceof FormData)) {
+          headers["Content-Type"] = "application/json";
+        }
+    
+        return fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+          method: "POST",
+          headers,
+          body: data instanceof FormData ? data : JSON.stringify(data), // Don’t stringify FormData
         })
-    },
+          .then(async (response) => {
+            if (!response.ok) {
+              const errorResponse = await response.json();
+              throw new Error(errorResponse.detail || "Something went wrong");
+            }
+            return response.json();
+          })
+          .then((json) => {
+            return json;
+          })
+          .catch((error) => {
+            console.error("API Error:", error);
+            throw error;
+          });
+      },
 
     delete: async function (url: string): Promise<any> {
         const token = await getAccessToken();

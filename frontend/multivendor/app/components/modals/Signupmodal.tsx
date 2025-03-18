@@ -1,5 +1,4 @@
-"use client";
-
+'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSignupModal from "@/app/hooks/useSignupModal";
@@ -29,27 +28,44 @@ const SignupModal = () => {
   const [password2, setPassword2] = useState<string>("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [image, setImage] = useState<File | null>(null); // State for image file
 
   const submitSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
 
-    const formData = { email, username, password: password1, password2 };
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("username", username);
+    formData.append("password", password1);
+    formData.append("password2", password2);
+    if (image) {
+      formData.append("image", image);
+    }
 
     try {
       const response = await apiService.postWithoutToken("/api/auth/register/", formData);
       console.log("API response:", response);
 
-      if (response.id) {
+      if (response.token && response.token.access) {
         setLoggedIn(true, email);
         signupModal.close();
         router.push("/");
       } else {
         const tmpErrors: FormErrors = {};
+        // Handle specific error messages from API response
         for (const key in response) {
           if (Array.isArray(response[key])) {
-            tmpErrors[key] = response[key][0];
+            if (key === "email" && response[key][0].includes("already exists")) {
+              tmpErrors[key] = "This email already exists";
+            } else if (key === "username" && response[key][0].includes("already exists")) {
+              tmpErrors[key] = "This username is already taken";
+            } else if (key === "password1" || key === "password2") {
+              tmpErrors[key] = response[key][0]; // Show raw password errors
+            } else {
+              tmpErrors[key] = response[key][0];
+            }
           }
         }
         setErrors(tmpErrors);
@@ -61,13 +77,20 @@ const SignupModal = () => {
       setIsLoading(false);
     }
   };
+  // handle image
+  const handleimage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+  };
 
   const handleGoogleSignupSuccess = (credentialResponse: CredentialResponse) => {
     (async () => {
       setIsLoading(true);
       setErrors({});
       const token = credentialResponse.credential;
-      console.log("Google token:", token); // Log the token
+      console.log("Google token:", token);
       if (!token) {
         setErrors({ general: "No Google token received." });
         setIsLoading(false);
@@ -77,7 +100,6 @@ const SignupModal = () => {
         const response = await apiService.postWithoutToken("/api/auth/social/google-login/", {
           access_token: token,
         });
-        // console.log("Google signup response:", response);
         if (response.token && response.token.access) {
           handleLogin(response.user.id, response.token.access, response.token.refresh);
           setLoggedIn(true, response.user.email);
@@ -103,45 +125,81 @@ const SignupModal = () => {
   const content = (
     <>
       <form onSubmit={submitSignup} className="space-y-4">
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-          placeholder={errors.email || "Your e-mail address"}
-          type="email"
-          className={`w-full h-[54px] px-4 border ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          } rounded-xl`}
-          disabled={isLoading}
-        />
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-          placeholder={errors.username || "Your username"}
-          type="text"
-          className={`w-full h-[54px] px-4 border ${
-            errors.username ? "border-red-500" : "border-gray-300"
-          } rounded-xl`}
-          disabled={isLoading}
-        />
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
-          placeholder={errors.password1 || "Your password"}
-          type="password"
-          className={`w-full h-[54px] px-4 border ${
-            errors.password1 ? "border-red-500" : "border-gray-300"
-          } rounded-xl`}
-          disabled={isLoading}
-        />
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
-          placeholder={errors.password2 || "Repeat password"}
-          type="password"
-          className={`w-full h-[54px] px-4 border ${
-            errors.password2 ? "border-red-500" : "border-gray-300"
-          } rounded-xl`}
-          disabled={isLoading}
-        />
+        <div className="relative">
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            placeholder="Your e-mail address"
+            type="email"
+            className={`w-full h-[54px] px-4 border ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            } rounded-xl`}
+            disabled={isLoading}
+          />
+          {errors.email && (
+            <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+          )}
+        </div>
+
+        <div className="relative">
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+            placeholder="Your username"
+            type="text"
+            className={`w-full h-[54px] px-4 border ${
+              errors.username ? "border-red-500" : "border-gray-300"
+            } rounded-xl`}
+            disabled={isLoading}
+          />
+          {errors.username && (
+            <p className="text-red-600 text-sm mt-1">{errors.username}</p>
+          )}
+        </div>
+
+        <div className="relative">
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
+            placeholder="Your password"
+            type="password"
+            className={`w-full h-[54px] px-4 border ${
+              errors.password1 ? "border-red-500" : "border-gray-300"
+            } rounded-xl`}
+            disabled={isLoading}
+          />
+          {errors.password1 && (
+            <p className="text-red-600 text-sm mt-1">{errors.password1}</p>
+          )}
+        </div>
+
+        <div className="relative">
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
+            placeholder="Repeat password"
+            type="password"
+            className={`w-full h-[54px] px-4 border ${
+              errors.password2 ? "border-red-500" : "border-gray-300"
+            } rounded-xl`}
+            disabled={isLoading}
+          />
+          {errors.password2 && (
+            <p className="text-red-600 text-sm mt-1">{errors.password2}</p>
+          )}
+        </div>
+
+        <div className="relative">
+          <input
+            onChange={handleimage}
+            type="file"
+            accept="image/*"
+            className={`w-full h-[54px] px-4 border border-gray-300 rounded-xl`}
+            disabled={isLoading}
+          />
+          <p className="text-gray-600 text-sm mt-1">Optional: Upload a profile picture</p>
+        </div>
+
         {errors.general && (
           <div className="p-5 text-red-800 rounded-xl opacity-80">{errors.general}</div>
         )}
+
         <Custombutton
           label={isLoading ? "Submitting..." : "Submit"}
           type="submit"

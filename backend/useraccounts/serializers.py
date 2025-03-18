@@ -45,26 +45,39 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
+    image = serializers.ImageField(max_length=None, use_url=True, required=False, allow_null=True)
+    full_name = serializers.CharField(max_length=100, required=False, allow_blank=True)
 
     class Meta:
         model = User
-        fields = ('id','email', 'username', 'password', 'password2')
-        # added now
+        fields = ('id', 'email', 'username', 'password', 'password2', 'image', 'full_name')
 
-    
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match"})
         return attrs
-      
+
     def create(self, validated_data):
+        # Extract profile-related data
+        image = validated_data.pop('image', None)
+        full_name = validated_data.pop('full_name', None)
+
+        # Create the User
         user = User.objects.create(
             email=validated_data['email'],
             username=validated_data['username'],
-            
         )
-
         user.set_password(validated_data['password'])
         user.save()
 
+        # Update the profile created by the signal
+        user_profile = user.profile
+        if image:
+            user_profile.image = image
+        if full_name:
+            user_profile.full_name = full_name
+        user_profile.save()
+
         return user
+    
+    
