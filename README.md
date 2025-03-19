@@ -115,14 +115,6 @@ cd ecommerce-1
 - The backend API is at `http://localhost:8000/api`.
 - Check out the Django admin panel at `http://localhost:8000/admin` (login with your superuser credentials).
 
-## Contributing
-Want to make this project even more fun? Here’s how to contribute:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-cool-feature`).
-3. Add your changes and commit them (`git commit -m "Added a cool feature!"`).
-4. Push to your branch (`git push origin feature/your-cool-feature`).
-5. Open a pull request—we’d love to see your ideas! 🌟
-
 ---
 
 ### Fun Notes:
