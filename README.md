@@ -89,7 +89,7 @@ cd ecommerce-1
    ```
 3. Set up environment variables for the frontend. Create a `.env.local` file in the `frontend/multivendor` directory:
    ```env
-   NEXT_PUBLIC_API_URL=http://localhost:8000/api  # Backend API URL
+   NEXT_PUBLIC_API_URL=http://localhost:8000  # Backend API URL
    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
    ```
 
