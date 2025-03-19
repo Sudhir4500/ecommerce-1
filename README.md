@@ -12,7 +12,7 @@ Welcome to this awesome e-commerce web app—a fun project built with **Next.js*
 - 🛠️ Robust backend API with Django and PostgreSQL
 
 ## Tech Stack
-- **Frontend**: Next.js (React framework)
+- **Frontend**: Next.js (React framework with TypeScript)
 - **Backend**: Django (Python framework)
 - **Database**: PostgreSQL
 - **Authentication**: Google Auth (via Django Allauth) + JWT for API authentication
