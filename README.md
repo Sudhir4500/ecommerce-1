@@ -123,9 +123,6 @@ Want to make this project even more fun? Here’s how to contribute:
 4. Push to your branch (`git push origin feature/your-cool-feature`).
 5. Open a pull request—we’d love to see your ideas! 🌟
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ---
 
 ### Fun Notes:
