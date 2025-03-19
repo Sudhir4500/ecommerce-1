@@ -10,6 +10,7 @@ Welcome to this awesome e-commerce web app—a fun project built with **Next.js*
 - 🏪 Multivendor support—multiple sellers, one platform!
 - 📱 Responsive and beautiful frontend with Next.js and Tailwind CSS
 - 🛠️ Robust backend API with Django and PostgreSQL
+- 🛒 Shopping Cart: Add products to your cart, update quantities, and proceed to checkout with ease.
 
 ## Tech Stack
 - **Frontend**: Next.js (React framework with TypeScript)
