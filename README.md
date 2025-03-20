@@ -69,6 +69,7 @@ cd ecommerce-1
      STRIPE_SECRET_KEY=your_stripe_secret_key
      STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
      SIGNING_KEY=your_jwt_secret_key
+=======
      ```
 5. Run database migrations to set up the tables:
    ```bash
@@ -122,3 +123,5 @@ cd ecommerce-1
 - **JWT**: JWT is used for API authentication, keeping things secure and stateless.
 - **Stripe**: Stripe handles payments—test it out with Stripe’s test cards (e.g., `4242 4242 4242 4242`) in development mode.
 - **Tailwind CSS**: The UI is styled with Tailwind CSS, so feel free to tweak the classes to make it even prettier! 🎨
+=======
+
