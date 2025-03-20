@@ -1,5 +1,4 @@
 
-from django.shortcuts import render
 from .models import User
 from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
@@ -47,7 +46,7 @@ class RegisterView(generics.CreateAPIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]  # Handle multipart/form-data and JSON
 
     def create(self, request, *args, **kwargs):
-        # print("Request data:", request.data)  # Debug: Log incoming data
+        # print("Request data:", request.data) 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()

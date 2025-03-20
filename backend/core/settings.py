@@ -224,7 +224,7 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,                # Blacklist old refresh tokens
     "UPDATE_LAST_LOGIN": True,                       # Track last login
     "ALGORITHM": "HS512",                            # Strong encryption algorithm
-    "SIGNING_KEY": "e9f8b7c2a1d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7a2d5f4e8b9c7",     #secure, unique key
+    "SIGNING_KEY": os.getenv("SIGNING_KEY"),     #secure, unique key
     "VERIFYING_KEY": None,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "USER_ID_FIELD": "id",
