@@ -70,7 +70,7 @@ cd ecommerce-1
      STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
      SIGNING_KEY=your_jwt_secret_key
 =======
-     ```
+
 5. Run database migrations to set up the tables:
    ```bash
    python manage.py migrate
