@@ -75,7 +75,7 @@ const VendorProductDetail = () => {
 
   const handleDelete = async () => {
     try {
-      await apiService.delete(`/api/products/products/${id}`);
+      await apiService.delete(`/api/products/products/${id}/`);
       router.push("/vendorproduct"); // Redirect to the vendor products list
     } catch (err: any) {
       console.error("Error deleting product:", err);

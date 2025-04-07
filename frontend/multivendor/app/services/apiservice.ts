@@ -107,46 +107,46 @@ const apiService = {
           });
       },
 
-    // delete: async function (url: string): Promise<any> {
-    //     const token = await getAccessToken();
-    //     return new Promise<void>((resolve, reject) => {
-    //         fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}/`, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         })
-    //             .then(response => {
-    //                 if (!response) {
-    //                     throw new Error('No response received from the server');
-    //                 }
-    //                 if (!response.ok) {
-    //                     throw new Error('Failed to delete item');
-    //                 }
-    //                 if (response.status === 204) {
-    //                     resolve();
-    //                     return;
-    //                 }
-    //                 return response.text().then(text => {
-    //                     try {
-    //                         return text ? JSON.parse(text) : {};
-    //                     } catch (error) {
-    //                         console.error('Error parsing JSON:', error);
-    //                         return {};
-    //                     }
-    //                 });
-    //             })
-    //             .then((json) => {
-    //                 resolve(json);
-    //             })
-    //             .catch((error) => {
-    //                 console.error('Error:', error);
-    //                 reject(error);
-    //             });
-    //     });
-    // },
+    deletecart: async function (url: string): Promise<any> {
+        const token = await getAccessToken();
+        return new Promise<void>((resolve, reject) => {
+            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response) {
+                        throw new Error('No response received from the server');
+                    }
+                    if (!response.ok) {
+                        throw new Error('Failed to delete item');
+                    }
+                    if (response.status === 204) {
+                        resolve();
+                        return;
+                    }
+                    return response.text().then(text => {
+                        try {
+                            return text ? JSON.parse(text) : {};
+                        } catch (error) {
+                            console.error('Error parsing JSON:', error);
+                            return {};
+                        }
+                    });
+                })
+                .then((json) => {
+                    resolve(json);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    reject(error);
+                });
+        });
+    },
     delete: async function (url: string): Promise<void> {
         const token = await getAccessToken();
         try {

@@ -141,7 +141,7 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-md mx-auto mt-8 p-4">
-      <h1 className="text-2xl font-bold mb-4">Change Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">User Profile</h1>
       <p className="mb-2">{profile?.email}</p>
 
       <div className="mb-4">
