@@ -85,6 +85,7 @@ const ProfilePage = () => {
         showCancelButton: false,
       });
       setIsModalOpen(true);
+      window.location.reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile");
     }
