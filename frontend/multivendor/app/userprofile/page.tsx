@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import apiService from "@/app/services/apiservice";
 import ConfirmationModal from "../components/forms/ConfirmationModal";
 import { resetAuthCookies } from "../lib/actions";
+import { useLoading } from "@/app/context/Loadingcontext";
 
 type UserProfile = {
   email: string;
@@ -13,8 +14,8 @@ type UserProfile = {
 
 const ProfilePage = () => {
   const router = useRouter();
+  const { setLoading } = useLoading();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editImage, setEditImage] = useState<File | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,18 +39,19 @@ const ProfilePage = () => {
     }
 
     const fetchProfile = async () => {
+      setLoading(true); // Set loading to true before fetching profile
       try {
         const userData: UserProfile = await apiService.get("/api/auth/profile/");
         setProfile(userData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load profile");
       } finally {
-        setLoading(false);
+        setLoading(false); // Reset loading to false after fetching profile
       }
     };
 
     fetchProfile();
-  }, [isDeleted]);
+  }, [isDeleted, setLoading]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -63,6 +65,7 @@ const ProfilePage = () => {
   };
 
   const handleUpdateProfile = async () => {
+    setLoading(true); // Set loading to true before updating profile
     try {
       const formData = new FormData();
       if (editImage) {
@@ -85,9 +88,11 @@ const ProfilePage = () => {
         showCancelButton: false,
       });
       setIsModalOpen(true);
-      window.location.reload()
+      window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setLoading(false); // Reset loading to false after updating profile
     }
   };
 
@@ -103,6 +108,7 @@ const ProfilePage = () => {
   };
 
   const confirmDeleteProfile = async () => {
+    setLoading(true); // Set loading to true before deleting profile
     try {
       console.log("Deleting profile...");
       await apiService.delete("/api/auth/delete-profile/");
@@ -122,14 +128,13 @@ const ProfilePage = () => {
       setIsModalOpen(false);
       console.log("Profile deleted and cookies cleared, redirecting to /");
       router.replace("/"); // Replace to avoid history issues
-
-   
-    
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to delete profile";
       console.error("Delete error:", errorMessage);
       setError(errorMessage);
       setIsModalOpen(false);
+    } finally {
+      setLoading(false); // Reset loading to false after deleting profile
     }
   };
 
@@ -137,7 +142,6 @@ const ProfilePage = () => {
     setIsModalOpen(false);
   };
 
-  if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
