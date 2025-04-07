@@ -1,6 +1,6 @@
 
 from .models import User
-from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer
+from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer,ProfileSerializer
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 
 from rest_framework.decorators import api_view, permission_classes
@@ -67,23 +67,54 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
     
 
-# check if the user is authenticated to get the profile
-@api_view(['GET', 'POST'])
+# Profile view with GET and PATCH support
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def profileView(request):
+    user = request.user
+
     if request.method == 'GET':
-        # Use request.user instead of request.user.profile
-        serializer = UserSerializer(request.user, many=False)  # Fix: Serialize User, not Profile
-        # Alternative: Use UserWithProfileSerializer if you want profile data
-        serializer = UserWithProfileSerializer(request.user, many=False)
+        serializer = UserWithProfileSerializer(user, many=False)
         return Response(serializer.data)
-    else:
-        # For POST, update user or profile fields based on request data
-        serializer = UserSerializer(request.user, data=request.data, partial=True)
+
+    elif request.method == 'PATCH':
+        # Handle multipart/form-data for image and name updates
+        parser_classes = [MultiPartParser, FormParser, JSONParser]
+        
+        # Extract profile data from request
+        data = request.data
+        profile_instance = user.profile
+        
+        # Prepare data for partial update
+        profile_data = {}
+        if 'name' in data:  # Frontend sends 'name' which maps to 'full_name'
+            profile_data['full_name'] = data['name']
+        if 'image' in data:  # Image file from FormData
+            profile_data['image'] = data['image']
+
+        # Update profile using ProfileSerializer
+        serializer = ProfileSerializer(profile_instance, data=profile_data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            # Return updated user data
+            updated_user_serializer = UserWithProfileSerializer(user)
+            return Response(updated_user_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Delete profile view (optional, if you want to support DELETE from frontend)
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteProfileView(request):
+    print("Received DELETE request from:", request.user.email)
+    user = request.user
+    user.delete()
+    print("User deleted:", request.user.email)
+    return Response({"message": "Profile deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
     
 
 
