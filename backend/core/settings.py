@@ -17,6 +17,10 @@ from datetime import timedelta
 import dj_database_url
 import cloudinary 
 import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 from decouple import config
 
 load_dotenv()
@@ -62,7 +66,8 @@ INSTALLED_APPS = [
    'cart',
    'delivery_address',
    'social_auth',
-    'payment'
+    'payment',
+    'orders',
 
   
 ]
@@ -278,6 +283,8 @@ SOCIAL_AUTH_PIPELINE = (
 # this is for the stripe payment gateway using decouple 
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
+
 
 
 

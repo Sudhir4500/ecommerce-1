@@ -125,6 +125,7 @@ const Usernav: React.FC<UserNavProps> = ({ userId }) => {
                 email={userId}
                 className="lg:hidden"
               />
+              <MenuLink label="My Orders" onclick={() => router.push("/dashboard")} /> 
               <LogoutButton />
             </>
           ) : (

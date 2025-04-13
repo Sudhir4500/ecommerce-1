@@ -1,4 +1,3 @@
-//services/apiservice.ts
 import { getAccessToken } from "../lib/actions";
 
 const apiService = {
@@ -107,7 +106,7 @@ const apiService = {
           });
       },
 
-    deletecart: async function (url: string): Promise<any> {
+    delete: async function (url: string): Promise<any> {
         const token = await getAccessToken();
         return new Promise<void>((resolve, reject) => {
             fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}/`, {
@@ -147,97 +146,28 @@ const apiService = {
                 });
         });
     },
-    delete: async function (url: string): Promise<void> {
-        const token = await getAccessToken();
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, { // Removed extra trailing slash
-            method: 'DELETE',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json', // Optional for DELETE, can be omitted
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-    
-          if (!response.ok) {
-            const errorText = await response.text(); // Get raw text for error details
-            let errorDetail;
-            try {
-              errorDetail = JSON.parse(errorText).detail || errorText;
-            } catch {
-              errorDetail = errorText || 'Unknown error';
-            }
-            throw new Error(`Failed to delete: ${response.status} - ${errorDetail}`);
-          }
-    
-          // 204 No Content is expected, no need to parse body
-          if (response.status === 204) {
-            return; // Resolve with void as expected
-          }
-    
-          // If server returns unexpected content, parse it (optional)
-          const json = await response.json();
-          return json; // Only if your backend deviates from 204
-        } catch (error) {
-          console.error('Delete API Error:', error);
-          throw error; // Re-throw to be caught in the calling function
-        }
-      },
 
-    // patch: async function (url: string, data: any): Promise<any> {
-    //     const token = await getAccessToken();
-    //     return new Promise((resolve, reject) => {
-    //         fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
-    //             method: 'PATCH',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${token}`
-    //             },
-    //             body: JSON.stringify(data)
-    //         })
-    //             .then(response => response.json())
-    //             .then((json) => {
-    //                 resolve(json);
-    //             })
-    //             .catch((error) => {
-    //                 reject(error);
-    //             });
-    //     });
-    // },
-    
-patch: async function (url: string, data: any): Promise<any> {
-    const token = await getAccessToken();
-    const headers: Record<string, string> = {
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  
-    // Do not set Content-Type for FormData; let the browser handle it
-    if (!(data instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
+    patch: async function (url: string, data: any): Promise<any> {
+        const token = await getAccessToken();
+        return new Promise((resolve, reject) => {
+            fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then((json) => {
+                    resolve(json);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
     }
-  
-    return fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
-      method: 'PATCH',
-      headers: data instanceof FormData ? { 'Authorization': `Bearer ${token}` } : headers,
-      body: data instanceof FormData ? data : JSON.stringify(data),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          throw new Error(errorResponse.detail || 'Something went wrong');
-        }
-        return response.json();
-      })
-      .then((json) => {
-        return json;
-      })
-      .catch((error) => {
-        console.error('API Error:', error);
-        throw error;
-      });
-  },
 }
 
 export default apiService;
