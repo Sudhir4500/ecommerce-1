@@ -1,9 +1,8 @@
 
 from .models import User
-from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer
+from .serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer,UserWithProfileSerializer,ProfileSerializer
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
-
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes,parser_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
@@ -67,23 +66,67 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
     
 
-# check if the user is authenticated to get the profile
-@api_view(['GET', 'POST'])
+# Profile view with GET and PATCH support
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def profileView(request):
+    user = request.user
+
     if request.method == 'GET':
-        # Use request.user instead of request.user.profile
-        serializer = UserSerializer(request.user, many=False)  # Fix: Serialize User, not Profile
-        # Alternative: Use UserWithProfileSerializer if you want profile data
-        serializer = UserWithProfileSerializer(request.user, many=False)
-        return Response(serializer.data)
-    else:
-        # For POST, update user or profile fields based on request data
-        serializer = UserSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserWithProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        try:
+            profile_instance = user.profile
+            profile_data = {}
+
+            # Extract and map data from request
+            if 'name' in request.data:
+                profile_data['full_name'] = request.data['name']
+            if 'image' in request.data:
+                profile_data['image'] = request.data['image']
+
+            # Update profile using ProfileSerializer
+            serializer = ProfileSerializer(
+                instance=profile_instance,
+                data=profile_data,
+                partial=True
+            )
+
+            if serializer.is_valid():
+                serializer.save()
+                # Return updated user data
+                updated_user_serializer = UserWithProfileSerializer(user)
+                return Response(updated_user_serializer.data, status=status.HTTP_200_OK)
+            
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except AttributeError:
+            return Response(
+                {"error": "User profile not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+# Delete profile view (optional, if you want to support DELETE from frontend)
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def deleteProfileView(request):
+    print("Received DELETE request from:", request.user.email)
+    user = request.user
+    user.delete()
+    print("User deleted:", request.user.email)
+    return Response({"message": "Profile deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
     
 
 
@@ -96,6 +139,5 @@ def profileView(request):
 #         return Response({"isLoggedIn": True, "userId": request.user.id}, status=status.HTTP_200_OK)
 #     else:
 #         return Response({"isLoggedIn": False}, status=status.HTTP_200_OK)
-
 
 

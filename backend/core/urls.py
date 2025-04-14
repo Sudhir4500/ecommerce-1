@@ -15,6 +15,7 @@ urlpatterns = [
 
 
    path('payments/', include('payment.urls')),
+    path('orders/', include('orders.urls')),  # Ensure trailing slash for consistency
 ]
 
 

@@ -3,6 +3,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 const ACCESS_TOKEN_MAX_AGE = 60 * 60; // 60 minutes
@@ -97,3 +98,4 @@ export async function getAccessToken() {
 export async function getRefreshToken() {
     return (await cookies()).get('session_refresh_token')?.value || null;
 }
+

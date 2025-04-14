@@ -9,7 +9,10 @@ export async function middleware(request: { nextUrl: { pathname: string; }; url:
     '/review', // Example: Add your protected routes here
     '/placeorder',
     '/Delivery',
-     // Example: Protect server-side API routes
+    '/userprofile',
+    '/vendorsproducts', // Example: Protect vendor products page
+    '/vendorsproducts/[id]', // Example: Protect vendor product detail page
+    '/dashboard', // Example: Protect dashboard page
   ];
 
   // Check if the current path is protected

@@ -7,6 +7,8 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "@/app/hooks/useSignupModal";
 import VendorCheck from "../vendorcheck/CheckVendorStatus";
 import apiService from "@/app/services/apiservice";
+import { useRouter } from "next/navigation";
+import Userprofiledisplay from "./Userprofiledisplay";
 
 interface UserNavProps {
   userId?: string | null;
@@ -32,6 +34,7 @@ const Usernav: React.FC<UserNavProps> = ({ userId }) => {
   const signupModal = useSignupModal();
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const router = useRouter(); // For redirecting after deletion
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -58,7 +61,7 @@ const Usernav: React.FC<UserNavProps> = ({ userId }) => {
         {userId && profile ? (
           // Show profile image or fallback when logged in
           <>
-            {profile.profile.image ? (
+            {profile?.profile?.image ? (
               <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
                 <img
                   src={profile.profile.image}
@@ -108,22 +111,21 @@ const Usernav: React.FC<UserNavProps> = ({ userId }) => {
       </button>
 
       {isOpen && (
-        <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-lg shadow-lg">
+        <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-lg shadow-lg"
+       
+        >
           {userId && profile ? (
             <>
-              <div className="px-4 py-2 border-b cursor-default">
-                <div className="flex items-center space-x-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold break-words">{profile.username}</p>
-                    <p className="text-sm text-gray-600 break-all">{profile.email}</p>
-                  </div>
-                </div>
-              </div>
+              <Userprofiledisplay
+                username={profile?.username}
+                email={profile?.email}
+              />
 
               <VendorCheck
                 email={userId}
                 className="lg:hidden"
               />
+              <MenuLink label="My Orders" onclick={() => router.push("/dashboard")} /> 
               <LogoutButton />
             </>
           ) : (

@@ -65,7 +65,7 @@ const Cartmodal = () => {
                 setTotalAmount(updatedCart.reduce((sum, item) => sum + parseFloat(item.total_price as string), 0));
                 return updatedCart;
             });
-            const response = await apiService.delete(`/api/cart/cart/${id}`);
+            const response = await apiService.deletecart(`/api/cart/cart/${id}`);
             if (response && response.status && response.status !== 204) {
                 console.warn("Unexpected status code:", response.status);
                 fetchCartData();

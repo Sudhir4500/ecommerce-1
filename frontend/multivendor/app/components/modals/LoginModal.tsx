@@ -23,14 +23,15 @@ const LoginModal = () => {
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
-  
+
     const formdata = { email, password };
-  
+
     try {
       const response = await apiService.postWithoutToken("/api/auth/login/", formdata);
       console.log("API response:", response);
@@ -62,13 +63,11 @@ const LoginModal = () => {
     }
   };
 
-
   const handleGoogleLoginSuccess = (credentialResponse: CredentialResponse) => {
     (async () => {
       setIsLoading(true);
       setErrors({});
       const token = credentialResponse.credential;
-      // console.log("Google token:", token); 
       if (!token) {
         setErrors({ general: "No Google token received." });
         setIsLoading(false);
@@ -78,7 +77,6 @@ const LoginModal = () => {
         const response = await apiService.postWithoutToken("/api/auth/social/google-login/", {
           access_token: token,
         });
-        // console.log("Google login response:", response);
         if (response.token && response.token.access) {
           handleLogin(response.user.id, response.token.access, response.token.refresh);
           setLoggedIn(true, response.user.email);
@@ -100,6 +98,10 @@ const LoginModal = () => {
     console.log("Google Login Failed");
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const content = (
     <>
       <form onSubmit={submitLogin} className="space-y-4">
@@ -116,18 +118,27 @@ const LoginModal = () => {
         {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
 
         {/* Password Input */}
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-          placeholder="Your password"
-          type="password"
-          className={`w-full h-[54px] px-4 border ${
-            errors.password ? "border-red-500" : "border-gray-300"
-          } rounded-xl`}
-          disabled={isLoading}
-        />
-        {errors.password && (
-          <div className="text-red-500 text-sm">{errors.password}</div>
-        )}
+        <div className="relative">
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            placeholder="Your password"
+            type={showPassword ? "text" : "password"}
+            className={`w-full h-[54px] px-4 border ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            } rounded-xl`}
+            disabled={isLoading}
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+          {errors.password && (
+            <div className="text-red-500 text-sm">{errors.password}</div>
+          )}
+        </div>
 
         {/* General Error Message */}
         {errors.general && (
@@ -137,7 +148,7 @@ const LoginModal = () => {
         {/* Submit Button */}
         <Custombutton
           label={isLoading ? "Submitting..." : "Submit"}
-          type="submit" // Rely on form's onSubmit
+          type="submit"
           disabled={isLoading}
           className={isLoading ? "opacity-50 cursor-not-allowed" : ""}
         />
@@ -150,20 +161,18 @@ const LoginModal = () => {
       </div>
 
       <div className="flex justify-center">
-      <GoogleLogin
-  onSuccess={handleGoogleLoginSuccess}
-  onError={handleGoogleLoginError}
-  useOneTap={true}
-  theme="filled_blue"
-  size="large"
-  // scope="openid profile email"  // Ensure these scopes
-/>
+        <GoogleLogin
+          onSuccess={handleGoogleLoginSuccess}
+          onError={handleGoogleLoginError}
+          useOneTap={true}
+          theme="filled_blue"
+          size="large"
+        />
       </div>
     </>
   );
 
   return (
-    // <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
       <Modal
         isOpen={loginmodal.isOpen}
